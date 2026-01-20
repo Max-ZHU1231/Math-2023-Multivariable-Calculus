@@ -1,0 +1,33 @@
+\documentclass[12pt, a4paper]{article}
+
+% 引入自定义样式包
+\usepackage{notebook}
+
+% --- 必须设置这些信息，封面才能获取到内容 ---
+\title{MATH 2023 Multivariable Calculus}
+\author{ZHU Xincheng}
+\date{\today}
+% ------------------------------------------
+
+
+\begin{document}
+
+% 1. 生成精美封面
+\makecustomtitle
+
+% 2. 目录页 (使用罗马数字页码)
+\thispagestyle{empty}
+\pagenumbering{roman}
+\tableofcontents
+\newpage
+
+% 3. 正文内容 (重置页码为阿拉伯数字)
+\pagenumbering{arabic}
+
+% 导入章节
+\input{chapters/chapter1}
+\input{chapters/chapter2}
+\input{chapters/chapter3}
+\input{chapters/chapter4}
+
+\end{document}

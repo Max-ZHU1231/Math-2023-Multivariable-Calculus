@@ -1,0 +1,474 @@
+\section{Partial Differentiations}
+
+\subsection{Functions of Several Variables}
+
+As the name implies, a function of several variables is a function that depends on multiple quantities.
+\begin{example}[Volume of a Cylinder]
+    \[ V(r, h) = \pi r^2 h \]
+    where \( r \) is the radius and \( h \) is the height. The notation \( V(r, h) \) indicates that \( V \) depends on both.
+\end{example}
+
+\subsubsection{Domains of Functions}
+The domain is the set of allowable inputs.
+\begin{itemize}
+    \item For \( f(x, y) = \sqrt{y - x^2} \), the domain is \( D = \{ (x, y) \in \mathbb{R}^2 \mid y \ge x^2 \} \).
+    \item For \( g(x, y) = \frac{1}{x^2 + y^2} \), the domain is \( \mathbb{R}^2 \setminus \{(0, 0)\} \).
+    \item For \( h(x, y) = \frac{1}{xy} \), the domain is \( \{ (x, y) \mid x \neq 0 \text{ or } y \neq 0 \} \) (the plane with axes removed).
+\end{itemize}
+
+\subsubsection{Visualizing Functions}
+
+\paragraph{Graphs}
+For a function of two variables \( z = f(x, y) \), the graph is a surface in \( \mathbb{R}^3 \). The height \( z \) above the point \( (x, y) \) represents the function value.
+\begin{itemize}
+    \item Like single-variable functions, these graphs must pass a ``vertical line test'' (every vertical line intersects the surface at most once).
+    \item Examples: \( z = x^2 + y^2 \) (paraboloid), \( z = \sqrt{1 - x^2 - y^2} \) (hemisphere).
+\end{itemize}
+
+\paragraph{Level Sets}
+Another way to visualize functions is through level sets (contour maps).
+
+\begin{definition}[Level Sets]
+Given a function \( f: \mathbb{R}^n \to \mathbb{R} \), the level set of \( f \) at value \( c \) is the set of points satisfying:
+\[
+\{ (x_1, \ldots, x_n) \in \mathbb{R}^n \mid f(x_1, \ldots, x_n) = c \}.
+\]
+\end{definition}
+
+\begin{example}
+For \( f(x, y) = x^2 + y^2 \):
+\begin{itemize}
+    \item \( c=0 \): The origin \((0,0)\).
+    \item \( c=1 \): Circle of radius 1.
+    \item \( c=2 \): Circle of radius \(\sqrt{2}\).
+\end{itemize}
+\end{example}
+
+\textbf{Summary of visualization:}
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Function Type} & \textbf{Graph} & \textbf{Level Sets} \\ \hline
+\( f(x) \) & Curve in \( \mathbb{R}^2 \) & Points in \( \mathbb{R} \) \\ \hline
+\( f(x, y) \) & Surface in \( \mathbb{R}^3 \) & Curves in \( \mathbb{R}^2 \) \\ \hline
+\( f(x, y, z) \) & (Cannot visualize in \( \mathbb{R}^3 \)) & Surfaces in \( \mathbb{R}^3 \) \\ \hline
+\end{tabular}
+\end{center}
+
+\subsection{Continuity}
+
+\begin{definition}[Continuous Functions]
+    A function \( f(x, y) \) is continuous at \((x_0, y_0)\) if:
+    \begin{enumerate}
+    \item \((x_0, y_0)\) is in the domain of \( f \); and
+    \item For any $\varepsilon > 0$, there exists \(\delta > 0\) such that whenever \(\sqrt{(x - x_0)^2 + (y - y_0)^2} < \delta\),
+    we have \(|f(x, y) - f(x_0, y_0)| < \varepsilon\).
+    \end{enumerate}
+\end{definition}
+
+\begin{property}[Continuity Rules]
+    \begin{enumerate}
+        \item Polynomials are continuous everywhere (e.g., \( x^2 + xy + y^5 \)).
+        \item Elementary functions ($\sin, \cos, e^x, |x|$) are continuous on their domains.
+        \item Sums, differences, products, compositions, and quotients (denominator $\neq 0$) of continuous functions are continuous.
+    \end{enumerate}
+\end{property}
+
+\subsection{Partial Derivatives}
+
+\subsubsection{First Derivatives}
+Partial differentiation involves differentiating with respect to one variable while holding others constant.
+
+\begin{definition}[Partial Derivatives]
+For a function \( f(x, y) \), the partial derivatives are defined as:
+\[
+\frac{\partial f}{\partial x} = f_x = \lim_{h \to 0} \frac{f(x + h, y) - f(x, y)}{h}
+\]
+\[
+\frac{\partial f}{\partial y} = f_y = \lim_{h \to 0} \frac{f(x, y + h) - f(x, y)}{h}
+\]
+\end{definition}
+
+\begin{example}
+    For \( f(x, y) = x^2 \sin(xy) \):
+    \begin{itemize}
+        \item \( f_x = 2x \sin(xy) + x^2 y \cos(xy) \) (Product rule on \( x \), chain rule on \( \sin(xy) \)).
+        \item \( f_y = x^3 \cos(xy) \) (\( x^2 \) is constant, derivative of \( \sin(xy) \) wrt \( y \) is \( x \cos(xy) \)).
+    \end{itemize}
+\end{example}
+
+\paragraph{Geometric Interpretation}
+\( f_x(a, b) \) is the slope of the tangent to the trace curve on the surface \( z=f(x,y) \) formed by intersecting the surface with the plane \( y=b \).
+
+\subsubsection{Second Derivatives and Regularity}
+
+\begin{definition}[$C^k$ Functions]
+A function \( f \) is of class \( C^k \) if all its partial derivatives up to and including order \( k \) exist and are continuous.
+\end{definition}
+
+\begin{theorem}[Clairaut's Theorem / Mixed Partials Theorem]
+If \( f_{xy} \) and \( f_{yx} \) are both continuous on a disk containing \((a,b)\), then:
+\[
+f_{xy}(a,b) = f_{yx}(a,b).
+\]
+\end{theorem}
+
+\begin{example}
+    Let \( f(x, y) = e^{\frac{\sin x}{x^{2014}}} + \cos(xy) \). Finding \( \frac{\partial}{\partial y} (\frac{\partial f}{\partial x}) \) is hard.
+    By Clairaut's Theorem, we calculate \( \frac{\partial}{\partial x} (\frac{\partial f}{\partial y}) \) instead:
+    \[ f_y = -x \sin(xy) \]
+    \[ f_{yx} = -\sin(xy) - xy \cos(xy) \]
+    Thus, \( f_{xy} = -\sin(xy) - xy \cos(xy) \).
+\end{example}
+
+\subsection{Chain Rule}
+
+The multivariable chain rule can be visualized using a dependency tree. Sum the product of derivatives along all paths from the dependent variable to the independent variable.
+
+\begin{theorem}[General Multivariable Chain Rule]
+If \( u \) is a differentiable function of several intermediate variables (e.g., \( x, y, z \)), and those are functions of independent variables (e.g., \( t \)), then:
+\[
+\frac{du}{dt} = \frac{\partial u}{\partial x} \frac{dx}{dt} + \frac{\partial u}{\partial y} \frac{dy}{dt} + \frac{\partial u}{\partial z} \frac{dz}{dt}.
+\]
+\end{theorem}
+
+\begin{example}
+    Let \( u = x^2 + y^2 - 2z^2 \) and \( \mathbf{r}(t) = \langle \cos t, \sin t, t \rangle \).
+    \[ \frac{du}{dt} = (2x)(-\sin t) + (2y)(\cos t) + (-4z)(1) \]
+    Substituting \( x, y, z \) back in terms of \( t \):
+    \[ = -2\cos t \sin t + 2\sin t \cos t - 4t = -4t. \]
+\end{example}
+
+\subsubsection{Implicit Differentiation Revisited}
+Using the Chain Rule on \( F(x, y) = c \):
+\begin{theorem}
+Suppose \( F(x, y) = c \) defines \( y \) implicitly as a function of \( x \). If \( F_y \neq 0 \), then:
+\[
+\frac{dy}{dx} = -\frac{F_x}{F_y}.
+\]
+\end{theorem}
+
+\begin{example}
+    \( x^2 + y^3 + \sin^2 y = 1 \). Let \( F(x, y) = x^2 + y^3 + \sin^2 y \).
+    \[ \frac{dy}{dx} = -\frac{2x}{3y^2 + 2\sin y \cos y} = -\frac{2x}{3y^2 + \sin(2y)}. \]
+\end{example}
+
+\subsection{Directional Derivatives}
+
+Recall that the physical meaning of the partial derivative $\frac{\partial f}{\partial x}$ is the rate of change of $f$ in the direction of the unit vector $\mathbf{i}$. Similarly, $\frac{\partial f}{\partial y}$ is the rate of change of $f$ in the direction of $\mathbf{j}$. In this section, we introduce the rate of change of $f$ in any other direction.
+
+\begin{definition}[Directional Derivative]
+Given a unit direction vector $\mathbf{u} = u_1\mathbf{i} + u_2\mathbf{j}$ and a two-variable function $f(x, y)$, the directional derivative of $f$ in the direction of $\mathbf{u}$ at point $(x, y)$ is denoted by $D_{\mathbf{u}} f(x, y)$ and defined to be:
+\[
+D_{\mathbf{u}} f(x, y) = \left. \frac{d}{dt} f(x + tu_1, y + tu_2) \right|_{t=0} = \lim_{h \to 0} \frac{f(x + hu_1, y + hu_2) - f(x,y)}{h}.
+\]
+\end{definition}
+
+\begin{remark}
+When $\mathbf{u} = \mathbf{i}$, then $u_1 = 1$ and $u_2 = 0$. In this case:
+\[
+D_{\mathbf{i}} f(x, y) = \lim_{h \to 0} \frac{f(x + h, y) - f(x, y)}{h} = \frac{\partial f}{\partial x}(x, y).
+\]
+Similarly, if $\mathbf{u} = \mathbf{j}$, then $D_{\mathbf{j}} f(x, y) = \frac{\partial f}{\partial y}(x, y)$.
+\end{remark}
+
+In practice, we rarely compute directional derivatives using the limit definition. Instead, we use the gradient vector.
+
+\subsubsection{The Gradient Vector}
+
+\begin{definition}[Gradient Vector]
+Given a two-variable function $f(x, y)$ which is differentiable ($C^1$) on its domain, the gradient vector of $f$ at $(x, y)$ is denoted by $\nabla f$ (read "del f") and defined as:
+\[
+\nabla f(x, y) = \frac{\partial f}{\partial x}(x, y)\mathbf{i} + \frac{\partial f}{\partial y}(x, y)\mathbf{j} = \langle f_x, f_y \rangle.
+\]
+\end{definition}
+
+\begin{example}
+Let $f(x, y) = x^2y + x^3$.
+\[
+\frac{\partial f}{\partial x} = 2xy + 3x^2, \quad \frac{\partial f}{\partial y} = x^2.
+\]
+Therefore, $\nabla f(x, y) = (2xy + 3x^2)\mathbf{i} + x^2\mathbf{j}$.
+At the specific point $(1, 1)$, $\nabla f(1, 1) = 5\mathbf{i} + \mathbf{j}$.
+\end{example}
+
+The gradient vector allows us to compute directional derivatives efficiently via the dot product.
+
+\begin{theorem}[Computation of Directional Derivatives]
+If $f$ is a differentiable function of $x$ and $y$, then $f$ has a directional derivative in the direction of any unit vector $\mathbf{u} = \langle u_1, u_2 \rangle$, and:
+\[
+D_{\mathbf{u}} f(x, y) = \nabla f(x, y) \cdot \mathbf{u} = f_x(x,y)u_1 + f_y(x,y)u_2.
+\]
+\end{theorem}
+
+\begin{proof}
+Let define a function of a single variable $g(t) = f(x + tu_1, y + tu_2)$. By the definition of the directional derivative, $D_{\mathbf{u}} f(x, y) = g'(0)$.
+Applying the Multivariable Chain Rule to $g(t)$:
+\[
+g'(t) = \frac{\partial f}{\partial x} \frac{dx}{dt} + \frac{\partial f}{\partial y} \frac{dy}{dt} = f_x(x+tu_1, y+tu_2) \cdot u_1 + f_y(x+tu_1, y+tu_2) \cdot u_2.
+\]
+Evaluating at $t=0$:
+\[
+g'(0) = f_x(x, y)u_1 + f_y(x, y)u_2 = \nabla f(x, y) \cdot \mathbf{u}.
+\]
+\end{proof}
+
+\begin{example}
+Find the directional derivative of $f(x, y) = x^2y + x^3$ at $(1, 1)$ in the direction of $\mathbf{v} = \mathbf{i} + \mathbf{j}$.
+
+\textbf{Solution:}
+First, note that $\mathbf{v}$ is \emph{not} a unit vector. We must normalize it:
+\[
+\mathbf{u} = \frac{\mathbf{v}}{|\mathbf{v}|} = \frac{1}{\sqrt{2}}\mathbf{i} + \frac{1}{\sqrt{2}}\mathbf{j}.
+\]
+We previously found $\nabla f(1, 1) = 5\mathbf{i} + \mathbf{j}$. Thus:
+\[
+D_{\mathbf{u}} f(1, 1) = \nabla f(1, 1) \cdot \mathbf{u} = \langle 5, 1 \rangle \cdot \left\langle \frac{1}{\sqrt{2}}, \frac{1}{\sqrt{2}} \right\rangle = \frac{5}{\sqrt{2}} + \frac{1}{\sqrt{2}} = \frac{6}{\sqrt{2}} = 3\sqrt{2}.
+\]
+\end{example}
+
+\subsubsection{Geometric Interpretation of the Gradient}
+
+The formula $D_{\mathbf{u}} f = \nabla f \cdot \mathbf{u}$ has powerful geometric implications. Using the geometric definition of the dot product:
+\[
+D_{\mathbf{u}} f = |\nabla f| |\mathbf{u}| \cos \theta = |\nabla f| \cos \theta,
+\]
+where $\theta$ is the angle between $\nabla f$ and $\mathbf{u}$ (since $|\mathbf{u}|=1$).
+
+\begin{theorem}[Properties of the Gradient]
+Let $f$ be differentiable at a point $P$.
+\begin{enumerate}
+    \item \textbf{Maximal Increase:} $f$ increases most rapidly in the direction of the gradient vector $\nabla f$ (where $\theta = 0$). The maximum rate of increase is $|\nabla f|$.
+    \item \textbf{Maximal Decrease:} $f$ decreases most rapidly in the direction opposite to the gradient, $-\nabla f$ (where $\theta = \pi$). The maximum rate of decrease is $-|\nabla f|$.
+    \item \textbf{No Change:} The directional derivative is zero when $\mathbf{u}$ is orthogonal to $\nabla f$ (where $\theta = \pi/2$).
+    \item \textbf{Orthogonality to Level Curves:} The gradient vector $\nabla f(a,b)$ is orthogonal to the level curve $f(x,y) = c$ passing through the point $(a,b)$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}[Proof of Orthogonality]
+Let $\mathbf{r}(t) = x(t)\mathbf{i} + y(t)\mathbf{j}$ parametrise the level curve $f(x,y)=c$. Then $f(x(t), y(t)) = c$ for all $t$. Differentiating with respect to $t$:
+\[
+\frac{\partial f}{\partial x} \frac{dx}{dt} + \frac{\partial f}{\partial y} \frac{dy}{dt} = 0 \implies \nabla f \cdot \mathbf{r}'(t) = 0.
+\]
+Since $\mathbf{r}'(t)$ is the tangent vector to the level curve, $\nabla f$ is orthogonal to the level curve.
+\end{proof}
+
+\subsubsection{Three-Variable Functions}
+For a function $f(x, y, z)$, the gradient is $\nabla f = \langle f_x, f_y, f_z \rangle$. The directional derivative is $D_{\mathbf{u}} f = \nabla f \cdot \mathbf{u}$.
+Crucially, for a level surface $f(x,y,z) = k$, the gradient vector $\nabla f(x_0, y_0, z_0)$ is normal to the tangent plane of the surface at that point.
+
+\subsection{Tangent Planes}
+
+In single-variable calculus, we approximate curves with tangent lines. In multivariable calculus, we approximate surfaces with tangent planes.
+
+\begin{theorem}[Tangent Plane to a Level Surface]
+The equation of the tangent plane to the level surface $F(x, y, z) = c$ at the point $P(x_0, y_0, z_0)$ is:
+\[
+F_x(P)(x - x_0) + F_y(P)(y - y_0) + F_z(P)(z - z_0) = 0.
+\]
+Here, $\mathbf{n} = \nabla F(P)$ serves as the normal vector to the plane.
+\end{theorem}
+
+\begin{example}
+Find the tangent plane to the surface $x^2 + y^2 = z^2 + 3$ at $(2, 0, -1)$.
+
+\textbf{Solution:} Rewrite as a level surface $F(x, y, z) = x^2 + y^2 - z^2 = 3$.
+\[
+\nabla F = \langle 2x, 2y, -2z \rangle.
+\]
+At $(2, 0, -1)$, the normal vector is $\mathbf{n} = \nabla F(2, 0, -1) = \langle 4, 0, 2 \rangle$.
+The equation of the plane is:
+\[
+4(x - 2) + 0(y - 0) + 2(z - (-1)) = 0 \implies 4x + 2z = 6 \implies 2x + z = 3.
+\]
+\end{example}
+
+\begin{theorem}[Tangent Plane to a Graph $z=f(x,y)$]
+The graph $z = f(x, y)$ can be viewed as the level surface $z - f(x, y) = 0$. Let $F(x, y, z) = z - f(x, y)$. Then $\nabla F = \langle -f_x, -f_y, 1 \rangle$.
+The equation of the tangent plane at $(x_0, y_0, z_0)$ is:
+\[
+-f_x(x_0, y_0)(x - x_0) - f_y(x_0, y_0)(y - y_0) + 1(z - z_0) = 0.
+\]
+Rearranging gives the standard linearization formula:
+\[
+z = f(x_0, y_0) + f_x(x_0, y_0)(x - x_0) + f_y(x_0, y_0)(y - y_0).
+\]
+\end{theorem}
+
+\subsection{Local Extrema}
+
+Optimization is a central theme in calculus. We extend the concept of critical points and the second derivative test to two variables.
+
+\subsubsection{Critical Points}
+
+\begin{definition}[Critical Point]
+A point $(a, b)$ is a \textbf{critical point} of $f(x, y)$ if:
+\begin{enumerate}
+    \item $\nabla f(a, b) = \mathbf{0}$ (i.e., $f_x(a, b) = 0$ and $f_y(a, b) = 0$); or
+    \item $\nabla f(a, b)$ does not exist.
+\end{enumerate}
+Geometrically, if the gradient is zero, the tangent plane is horizontal.
+\end{definition}
+
+\begin{example}
+Find critical points of $f(x, y) = xy - x^2 - y^2 - 2x - 2y + 4$.
+
+\textbf{Solution:} Set partials to zero:
+\[
+f_x = y - 2x - 2 = 0 \implies y = 2x + 2.
+\]
+\[
+f_y = x - 2y - 2 = 0.
+\]
+Substituting $y$: $x - 2(2x + 2) - 2 = 0 \implies -3x - 6 = 0 \implies x = -2$.
+If $x = -2$, then $y = -2$. The critical point is $(-2, -2)$.
+\end{example}
+
+\subsubsection{The Second Derivative Test}
+
+Unlike single-variable calculus, where checking concavity is straightforward ($f'' > 0$ or $f'' < 0$), surfaces can curve differently in different directions. A point might be a minimum in the $x$-direction but a maximum in the $y$-direction (a saddle point).
+
+\begin{theorem}[Second Derivative Test]
+Suppose the second partial derivatives of $f$ are continuous near a critical point $(a, b)$ where $\nabla f(a, b) = \mathbf{0}$. Let the \textbf{Hessian discriminant} be:
+\[
+D = D(a, b) = f_{xx}(a, b) f_{yy}(a, b) - [f_{xy}(a, b)]^2.
+\]
+\begin{itemize}
+    \item If $D > 0$ and $f_{xx}(a, b) > 0$, then $f(a, b)$ is a \textbf{local minimum}.
+    \item If $D > 0$ and $f_{xx}(a, b) < 0$, then $f(a, b)$ is a \textbf{local maximum}.
+    \item If $D < 0$, then $f(a, b)$ is not a local extremum; $(a, b)$ is a \textbf{saddle point}.
+    \item If $D = 0$, the test is \textbf{inconclusive}.
+\end{itemize}
+\end{theorem}
+
+\begin{example}
+Classify the critical points of $f(x, y) = 3y^2 - 2y^3 - 3x^2 + 6xy$.
+
+\textbf{Solution:}
+1. \textbf{Find Critical Points:}
+   \[ f_x = -6x + 6y = 0 \implies y = x. \]
+   \[ f_y = 6y - 6y^2 + 6x = 0. \]
+   Substitute $y=x$: $6x - 6x^2 + 6x = 0 \implies 12x - 6x^2 = 0 \implies 6x(2-x) = 0$.
+   Points: $(0,0)$ and $(2,2)$.
+
+2. \textbf{Calculate Second Derivatives:}
+   \[ f_{xx} = -6, \quad f_{yy} = 6 - 12y, \quad f_{xy} = 6. \]
+   Discriminant $D(x, y) = (-6)(6 - 12y) - (6)^2$.
+
+3. \textbf{Test Points:}
+   \begin{itemize}
+       \item At $(0, 0)$: $D = (-6)(6) - 36 = -72$. Since $D < 0$, $(0,0)$ is a \textbf{Saddle Point}.
+       \item At $(2, 2)$: $D = (-6)(6 - 24) - 36 = (-6)(-18) - 36 = 108 - 36 = 72$.
+       Since $D > 0$ and $f_{xx} = -6 < 0$, $(2,2)$ is a \textbf{Local Maximum}.
+   \end{itemize}
+\end{example}
+
+\subsection{Lagrange's Multiplier}
+
+In previous sections, we learned how to find critical points in the interior of a domain by solving \( \nabla f = \mathbf{0} \). These points are candidates for local extrema. However, to determine the maximum or minimum of a function on the \textit{boundary} of a domain (or subject to a constraint), the simple gradient method often fails because the tangent plane at an extremum need not be horizontal.
+
+\subsubsection{Method of Lagrange Multipliers}
+
+When the domain of a function \( f(x, y) \) is restricted to a level set \( g(x, y) = c \) (the constraint), we use the method of Lagrange Multipliers.
+
+\begin{theorem}[Method of Lagrange Multipliers]
+To find the maximum and minimum values of \( f(x, y) \) subject to the constraint \( g(x, y) = k \) (assuming \( \nabla g \neq \mathbf{0} \)):
+\begin{enumerate}
+    \item Find all values of \( x, y \) and \( \lambda \) (the Lagrange multiplier) that solve the system:
+    \[
+    \begin{cases}
+    \nabla f(x, y) = \lambda \nabla g(x, y) \\
+    g(x, y) = k
+    \end{cases}
+    \]
+    \item Evaluate \( f \) at all solution points \((x, y)\). The largest value is the maximum; the smallest is the minimum.
+\end{enumerate}
+\end{theorem}
+
+\subsubsection{Geometric Interpretation}
+Why does this work? At a point \((a, b)\) on the constraint curve \( g(x, y) = k \) where \( f \) is maximized or minimized, the level curve of \( f \) passing through \((a, b)\) must be \textbf{tangent} to the constraint curve. Since gradients are orthogonal to level curves, the gradient vectors \( \nabla f(a, b) \) and \( \nabla g(a, b) \) must be parallel. Thus, \( \nabla f = \lambda \nabla g \) for some scalar \( \lambda \).
+
+\begin{example}
+Find the maximum and minimum values of \( f(x, y) = x^2 + y^2 + 2x + 2y \) subject to \( x^2 + y^2 = 1 \).
+
+\textbf{Solution:}
+Let \( g(x, y) = x^2 + y^2 = 1 \). The Lagrange condition \( \nabla f = \lambda \nabla g \) gives:
+\[ \langle 2x+2, 2y+2 \rangle = \lambda \langle 2x, 2y \rangle \]
+This yields the system:
+\begin{enumerate}
+    \item \( 2x + 2 = 2\lambda x \implies x + 1 = \lambda x \)
+    \item \( 2y + 2 = 2\lambda y \implies y + 1 = \lambda y \)
+    \item \( x^2 + y^2 = 1 \)
+\end{enumerate}
+From (1) and (2), if \( \lambda \neq 1 \), we have \( \frac{x+1}{x} = \lambda = \frac{y+1}{y} \), which implies \( y(x+1) = x(y+1) \implies xy+y = xy+x \implies y=x \).
+Substituting \( y=x \) into (3): \( 2x^2 = 1 \implies x = \pm \frac{1}{\sqrt{2}} \).
+Points: \( P_1(\frac{1}{\sqrt{2}}, \frac{1}{\sqrt{2}}) \) and \( P_2(-\frac{1}{\sqrt{2}}, -\frac{1}{\sqrt{2}}) \).
+Evaluations:
+\[ f(P_1) = 1 + 2\sqrt{2} \approx 3.83 \quad (\text{Max}) \]
+\[ f(P_2) = 1 - 2\sqrt{2} \approx -1.83 \quad (\text{Min}) \]
+\end{example}
+
+\begin{example}
+Find the distance from the origin to the plane \( 2x + 3y + 4z = 29 \).
+
+\textbf{Solution:}
+Minimize \( f(x,y,z) = x^2 + y^2 + z^2 \) subject to \( g(x,y,z) = 2x+3y+4z = 29 \).
+\[ \nabla f = \langle 2x, 2y, 2z \rangle, \quad \nabla g = \langle 2, 3, 4 \rangle \]
+\( \nabla f = \lambda \nabla g \implies 2x=2\lambda, \; 2y=3\lambda, \; 2z=4\lambda \).
+Thus \( x=\lambda, y=\frac{3}{2}\lambda, z=2\lambda \).
+Substitute into constraint: \( 2(\lambda) + 3(\frac{3}{2}\lambda) + 4(2\lambda) = 29 \implies 2\lambda + 4.5\lambda + 8\lambda = 29 \implies 14.5\lambda = 29 \implies \lambda = 2 \).
+Point: \( (2, 3, 4) \). Distance: \( \sqrt{2^2+3^2+4^2} = \sqrt{29} \).
+\end{example}
+
+\subsection{Applied Optimization}
+
+\subsubsection{Constrained Optimization Examples}
+
+\begin{example}[Airline Baggage]
+Maximize volume \( V = lwh \) subject to \( l + w + h = 62 \).
+
+\textbf{Solution:}
+\( \nabla V = \langle wh, lh, lw \rangle \), \( \nabla g = \langle 1, 1, 1 \rangle \).
+\( \nabla V = \lambda \nabla g \implies wh = \lambda, \; lh = \lambda, \; lw = \lambda \).
+Thus \( wh = lh \implies w=l \) (since \( h \neq 0 \)), and \( lh = lw \implies h=w \).
+So \( l=w=h \). Constraint: \( 3l = 62 \implies l = 62/3 \). The optimal shape is a cube.
+\end{example}
+
+\begin{example}[Location Problem]
+Find the location of a station on the curve \( y = x^3 + 1 \) to minimize the sum of squared distances to cities \( A(5, 2), B(-4, 4), C(-1, -3) \).
+
+\textbf{Solution:}
+Minimize \( f(x, y) = (x-5)^2 + (y-2)^2 + (x+4)^2 + (y-4)^2 + (x+1)^2 + (y+3)^2 \) subject to \( y - x^3 = 1 \).
+Solving the Lagrange system yields \( (0, 1) \) as the optimal location.
+\end{example}
+
+\subsubsection{Least Squares Approximation}
+
+Given data points \( (x_1, y_1), \ldots, (x_N, y_N) \), fit a line \( y = mx + c \) by minimizing the sum of squared errors:
+\[ f(m, c) = \sum_{i=1}^N (y_i - mx_i - c)^2 \]
+This is an unconstrained optimization problem in variables \( m \) and \( c \).
+Set partial derivatives to zero:
+\[ \frac{\partial f}{\partial m} = -2 \sum (y_i - mx_i - c)x_i = 0 \implies m \sum x_i^2 + c \sum x_i = \sum x_i y_i \]
+\[ \frac{\partial f}{\partial c} = -2 \sum (y_i - mx_i - c) = 0 \implies m \sum x_i + c N = \sum y_i \]
+This system of linear equations (Normal Equations) can be solved for the optimal \( m \) and \( c \).
+
+\subsubsection{Global Extrema on Bounded Regions}
+
+To find the absolute extrema of \( f \) on a region bounded by a closed curve:
+\begin{enumerate}
+    \item \textbf{Interior:} Find critical points inside the region (\( \nabla f = \mathbf{0} \)).
+    \item \textbf{Boundary:} Find critical points on the boundary using Lagrange Multipliers (or parametrization).
+    \item \textbf{Compare:} Evaluate \( f \) at all candidate points.
+\end{enumerate}
+
+\begin{example}
+Find absolute extrema of \( f(x, y) = x^2 - 4x + y^2 + 9 \) on \( 4x^2 + 9y^2 \leq 36 \).
+
+\textbf{Solution:}
+\begin{enumerate}
+    \item \textbf{Interior:} \( \nabla f = \langle 2x-4, 2y \rangle = \mathbf{0} \implies (2, 0) \). Check validity: \( 4(2)^2 + 0 = 16 \leq 36 \). Valid. \( f(2, 0) = 5 \).
+    \item \textbf{Boundary:} \( 4x^2 + 9y^2 = 36 \). Using Lagrange Multipliers (see Example 2.13), we found critical points \( (\pm 3, 0) \).
+    \( f(3, 0) = 6 \), \( f(-3, 0) = 30 \).
+\end{enumerate}
+\textbf{Conclusion:} Absolute Max is 30 at \( (-3, 0) \); Absolute Min is 5 at \( (2, 0) \).
+\end{example}

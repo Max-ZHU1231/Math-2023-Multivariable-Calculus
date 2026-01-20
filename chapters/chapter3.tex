@@ -1,0 +1,308 @@
+\section{Multiple Integrations}
+
+\subsection{Double Integrals in Rectangular Coordinates}
+
+In single-variable calculus, integration is used to find the area under the curve \( y = f(x) \). In multivariable calculus, we extend this concept to find the volume under the surface \( z = f(x, y) \).
+
+A double integral over a rectangular region \( R = [a, b] \times [c, d] \) is denoted by:
+\[
+\iint_R f(x, y) \, dA = \int_c^d \int_a^b f(x, y) \, dx \, dy.
+\]
+Here, the inner integral \( \int_a^b f(x, y) \, dx \) is computed by treating \( y \) as a constant. Its geometric meaning is the area of the cross-section of the solid at a fixed \( y \). The outer integral sums up these cross-sectional areas to find the total volume.
+
+\begin{theorem}[Fubini's Theorem for Rectangular Regions]
+Let \( f(x, y) \) be a continuous function over a rectangular region \( R = [a, b] \times [c, d] \). Then:
+\[
+\iint_R f(x, y) \, dA = \int_c^d \int_a^b f(x, y) \, dx \, dy = \int_a^b \int_c^d f(x, y) \, dy \, dx.
+\]
+This theorem allows us to switch the order of integration without changing the value of the integral.
+\end{theorem}
+
+\begin{example}
+Compute the following double integral:
+\[
+\int_1^2 \int_0^1 (4 - x - y^2 x) \, dx \, dy.
+\]
+
+\textbf{Solution:}
+We evaluate the inner integral first with respect to \( x \), treating \( y \) as a constant:
+\begin{align*}
+\int_1^2 \left[ \int_0^1 (4 - x - y^2 x) \, dx \right] dy &= \int_1^2 \left[ 4x - \frac{x^2}{2} - \frac{y^2 x^2}{2} \right]_{x=0}^{x=1} dy \\
+&= \int_1^2 \left( 4(1) - \frac{1}{2} - \frac{y^2}{2} \right) dy \\
+&= \int_1^2 \left( \frac{7}{2} - \frac{y^2}{2} \right) dy \\
+&= \left[ \frac{7}{2}y - \frac{y^3}{6} \right]_{y=1}^{y=2} \\
+&= \left( 7 - \frac{8}{6} \right) - \left( \frac{7}{2} - \frac{1}{6} \right) \\
+&= 7 - \frac{4}{3} - \frac{7}{2} + \frac{1}{6} = \frac{7}{3}.
+\end{align*}
+Alternatively, we can switch the order of integration:
+\begin{align*}
+\int_0^1 \int_1^2 (4 - x - y^2 x) \, dy \, dx &= \int_0^1 \left[ 4y - xy - \frac{y^3 x}{3} \right]_{y=1}^{y=2} dx \\
+&= \int_0^1 \left[ \left(8 - 2x - \frac{8x}{3}\right) - \left(4 - x - \frac{x}{3}\right) \right] dx \\
+&= \int_0^1 \left( 4 - \frac{10}{3}x \right) dx \\
+&= \left[ 4x - \frac{5}{3}x^2 \right]_0^1 = 4 - \frac{5}{3} = \frac{7}{3}.
+\end{align*}
+\end{example}
+
+\subsection{Fubini's Theorem for General Regions}
+
+When the region of integration \( R \) is not a rectangle, the limits of the inner integral will depend on the variable of the outer integral.
+
+\begin{theorem}[Fubini's Theorem for General Regions]
+Let \( R \) be a region in the \( xy \)-plane and \( f(x, y) \) be continuous on \( R \).
+\begin{enumerate}
+    \item If \( R \) is defined by \( a \le x \le b \) and \( g_1(x) \le y \le g_2(x) \) (Type I region), then:
+    \[ \iint_R f(x, y) \, dA = \int_a^b \int_{g_1(x)}^{g_2(x)} f(x, y) \, dy \, dx. \]
+    \item If \( R \) is defined by \( c \le y \le d \) and \( h_1(y) \le x \le h_2(y) \) (Type II region), then:
+    \[ \iint_R f(x, y) \, dA = \int_c^d \int_{h_1(y)}^{h_2(y)} f(x, y) \, dx \, dy. \]
+\end{enumerate}
+\end{theorem}
+
+\begin{example}
+Find the volume of the solid under the plane \( z = 3 - x - y \) over the triangular region \( R \) bounded by the \( x \)-axis, \( x = 1 \), and \( y = x \).
+
+\textbf{Solution:}
+The region \( R \) can be described as \( 0 \le x \le 1 \) and \( 0 \le y \le x \). The volume is:
+\begin{align*}
+V &= \int_0^1 \int_0^x (3 - x - y) \, dy \, dx \\
+&= \int_0^1 \left[ 3y - xy - \frac{y^2}{2} \right]_{y=0}^{y=x} dx \\
+&= \int_0^1 \left( 3x - x^2 - \frac{x^2}{2} \right) dx = \int_0^1 \left( 3x - \frac{3}{2}x^2 \right) dx \\
+&= \left[ \frac{3}{2}x^2 - \frac{1}{2}x^3 \right]_0^1 = \frac{3}{2} - \frac{1}{2} = 1.
+\end{align*}
+We can also describe \( R \) as \( 0 \le y \le 1 \) and \( y \le x \le 1 \). Then:
+\[
+V = \int_0^1 \int_y^1 (3 - x - y) \, dx \, dy = 1.
+\]
+\end{example}
+
+\begin{example}
+Evaluate the integral \( \int_0^1 \int_y^1 \frac{\sin x}{x} \, dx \, dy \).
+
+\textbf{Solution:}
+The inner integral \( \int \frac{\sin x}{x} \, dx \) cannot be expressed in terms of elementary functions. We must switch the order of integration.
+The region is defined by \( 0 \le y \le 1 \) and \( y \le x \le 1 \). This corresponds to the triangle bounded by \( y=0 \), \( x=1 \), and \( y=x \).
+Rewriting the region as Type I: \( 0 \le x \le 1 \) and \( 0 \le y \le x \).
+\begin{align*}
+\int_0^1 \int_0^x \frac{\sin x}{x} \, dy \, dx &= \int_0^1 \left[ y \frac{\sin x}{x} \right]_{y=0}^{y=x} dx \\
+&= \int_0^1 \left( x \frac{\sin x}{x} - 0 \right) dx \\
+&= \int_0^1 \sin x \, dx = \left[ -\cos x \right]_0^1 = -\cos(1) + 1 = 1 - \cos(1).
+\end{align*}
+\end{example}
+
+\subsection{Double Integrals in Polar Coordinates}
+
+When the region of integration is circular or the integrand involves \( x^2 + y^2 \), it is often convenient to use polar coordinates.
+The relationship between rectangular coordinates \((x, y)\) and polar coordinates \((r, \theta)\) is:
+\[ x = r \cos \theta, \quad y = r \sin \theta, \quad x^2 + y^2 = r^2. \]
+The area element transforms as:
+\[ dA = dx \, dy = r \, dr \, d\theta. \]
+This extra factor of \( r \) comes from the Jacobian of the coordinate transformation.
+
+\begin{theorem}[Change of Variables to Polar Coordinates]
+If \( R \) is a polar region defined by \( \alpha \le \theta \le \beta \) and \( g_1(\theta) \le r \le g_2(\theta) \), then:
+\[
+\iint_R f(x, y) \, dA = \int_\alpha^\beta \int_{g_1(\theta)}^{g_2(\theta)} f(r \cos \theta, r \sin \theta) \, r \, dr \, d\theta.
+\]
+\end{theorem}
+
+\begin{proof}
+    The proof uses the change of variables formula for double integrals. Consider the polar coordinate transformation:
+    \[
+        x = r \cos \theta, \quad y = r \sin \theta,
+    \]
+    where \( r \ge 0 \) and \( \theta \) is the polar angle. The Jacobian determinant of this transformation is
+    \[
+        \frac{\partial(x, y)}{\partial(r, \theta)} = 
+        \begin{vmatrix}
+            \dfrac{\partial x}{\partial r} & \dfrac{\partial x}{\partial \theta} \\[1em]
+            \dfrac{\partial y}{\partial r} & \dfrac{\partial y}{\partial \theta}
+        \end{vmatrix}
+        = \begin{vmatrix}
+            \cos \theta & -r \sin \theta \\
+            \sin \theta &  r \cos \theta
+        \end{vmatrix}
+        = r \cos^2 \theta + r \sin^2 \theta = r.
+    \]
+    Since in polar coordinates we typically have \( r \ge 0 \), the absolute value of the Jacobian is \( |r| = r \). Thus, the area element transforms as
+    \[
+        dA = dx\,dy = \left| \frac{\partial(x, y)}{\partial(r, \theta)} \right| dr\,d\theta = r\,dr\,d\theta.
+    \]
+    Let the region \( R \) in the \( xy \)-plane be described in polar coordinates by \( \alpha \le \theta \le \beta \) and \( g_1(\theta) \le r \le g_2(\theta) \). Denote the corresponding region in the \( r\theta \)-plane by
+    \[
+        R' = \{(r, \theta) \mid \alpha \le \theta \le \beta,\ g_1(\theta) \le r \le g_2(\theta)\}.
+    \]
+    By the change of variables formula for double integrals, we have
+    \[
+        \iint_R f(x, y)\, dA = \iint_{R'} f(r \cos \theta, r \sin \theta) \,
+        \left| \frac{\partial(x, y)}{\partial(r, \theta)} \right| dr\,d\theta
+        = \iint_{R'} f(r \cos \theta, r \sin \theta) \, r\,dr\,d\theta.
+    \]
+    Expressing the double integral over \( R' \) as an iterated integral yields
+    \[
+        \iint_R f(x, y)\, dA = \int_{\alpha}^{\beta} \int_{g_1(\theta)}^{g_2(\theta)} 
+        f(r \cos \theta, r \sin \theta) \, r\,dr\,d\theta.
+    \]
+    This completes the proof.
+\end{proof}
+
+\begin{example}
+Evaluate \( \iint_R (x^2 + y^2) \, dA \) where \( R \) is the semicircular region bounded by the \( x \)-axis and the upper half of the unit circle \( y = \sqrt{1 - x^2} \).
+
+\textbf{Solution:}
+In rectangular coordinates, this is \( \int_{-1}^1 \int_0^{\sqrt{1-x^2}} (x^2 + y^2) \, dy \, dx \), which is difficult.
+In polar coordinates, the region \( R \) is \( 0 \le r \le 1 \) and \( 0 \le \theta \le \pi \).
+\begin{align*}
+\iint_R (x^2 + y^2) \, dA &= \int_0^\pi \int_0^1 (r^2) \, r \, dr \, d\theta \\
+&= \int_0^\pi \int_0^1 r^3 \, dr \, d\theta \\
+&= \int_0^\pi \left[ \frac{r^4}{4} \right]_0^1 d\theta \\
+&= \int_0^\pi \frac{1}{4} \, d\theta = \frac{\pi}{4}.
+\end{align*}
+\end{example}
+
+\begin{example}
+Evaluate \( \iint_R x \, dA \) where \( R \) is the annular region \( 2 \le r \le 4 \) and \( 0 \le \theta \le 2\pi \).
+
+\textbf{Solution:}
+In polar coordinates, \( x = r \cos \theta \).
+\begin{align*}
+\iint_R x \, dA &= \int_0^{2\pi} \int_2^4 (r \cos \theta) \, r \, dr \, d\theta \\
+&= \int_0^{2\pi} \cos \theta \, d\theta \cdot \int_2^4 r^2 \, dr \\
+&= \left[ \sin \theta \right]_0^{2\pi} \cdot \left[ \frac{r^3}{3} \right]_2^4 \\
+&= (0 - 0) \cdot \left( \frac{64}{3} - \frac{8}{3} \right) = 0.
+\end{align*}
+\end{example}
+
+\begin{example}[A Notably Difficult Single-Variable Integral]
+Evaluate the famous Gaussian integral \( \int_{-\infty}^\infty e^{-x^2} dx \).
+
+\textbf{Solution:}
+Let \( I = \int_0^\infty e^{-x^2} dx \). Then \( I^2 = \left( \int_0^\infty e^{-x^2} dx \right) \left( \int_0^\infty e^{-y^2} dy \right) = \int_0^\infty \int_0^\infty e^{-(x^2+y^2)} \, dx \, dy \).
+Using polar coordinates, the region is the first quadrant: \( 0 \le r < \infty \), \( 0 \le \theta \le \pi/2 \).
+\begin{align*}
+I^2 &= \int_0^{\pi/2} \int_0^\infty e^{-r^2} r \, dr \, d\theta \\
+&= \int_0^{\pi/2} \left[ -\frac{1}{2} e^{-r^2} \right]_0^\infty d\theta \\
+&= \int_0^{\pi/2} \left( 0 - \left(-\frac{1}{2}\right) \right) d\theta \\
+&= \frac{1}{2} \cdot \frac{\pi}{2} = \frac{\pi}{4}.
+\end{align*}
+Thus \( I = \frac{\sqrt{\pi}}{2} \). Since \( e^{-x^2} \) is even, \( \int_{-\infty}^\infty e^{-x^2} dx = 2I = \sqrt{\pi} \).
+\end{example}
+
+\subsection{Triple Integrals in Rectangular Coordinates}
+
+Triple integrals are used to calculate properties of solids, such as volume, mass, or moments of inertia. The volume element is \( dV = dx \, dy \, dz \).
+
+\begin{example}[Pillar-Base Approach]
+Evaluate \( \iiint_D x^2 \, dV \) where \( D \) is the tetrahedron bounded by \( z = y - x \), \( y = 1 \), \( z = 0 \), and \( x = 0 \) (in the first octant).
+
+\textbf{Solution:}
+We use the order \( dz \, dy \, dx \).
+\begin{enumerate}
+    \item \textbf{Pillar (Inner Integral):} For a fixed \((x, y)\), \( z \) goes from \( z=0 \) to \( z=y-x \).
+    \item \textbf{Base (Outer Integrals):} The projection onto the \( xy \)-plane is the triangle bounded by \( y=x \), \( y=1 \), and \( x=0 \). So \( 0 \le x \le 1 \) and \( x \le y \le 1 \).
+\end{enumerate}
+\begin{align*}
+\int_0^1 \int_x^1 \int_0^{y-x} x^2 \, dz \, dy \, dx &= \int_0^1 \int_x^1 [x^2 z]_0^{y-x} \, dy \, dx \\
+&= \int_0^1 \int_x^1 (x^2 y - x^3) \, dy \, dx \\
+&= \int_0^1 \left[ \frac{1}{2} x^2 y^2 - x^3 y \right]_{y=x}^{y=1} dx \\
+&= \int_0^1 \left( (\frac{1}{2} x^2 - x^3) - (\frac{1}{2} x^4 - x^4) \right) dx \\
+&= \int_0^1 \left( \frac{1}{2} x^2 - x^3 + \frac{1}{2} x^4 \right) dx \\
+&= \left[ \frac{1}{6} x^3 - \frac{1}{4} x^4 + \frac{1}{10} x^5 \right]_0^1 = \frac{1}{6} - \frac{1}{4} + \frac{1}{10} = \frac{1}{60}.
+\end{align*}
+\end{example}
+
+\subsection{Triple Integrals in Cylindrical Coordinates}
+
+Cylindrical coordinates are useful for solids with rotational symmetry about the \( z \)-axis.
+The transformation is:
+\[ x = r \cos \theta, \quad y = r \sin \theta, \quad z = z. \]
+The volume element becomes:
+\[ dV = r \, dz \, dr \, d\theta. \]
+
+\begin{example}
+Find the volume of the solid bounded by \( z = 4 - 4(x^2 + y^2) \) and \( z = (x^2 + y^2)^2 - 1 \).
+
+\textbf{Solution:}
+In cylindrical coordinates, the surfaces are \( z = 4 - 4r^2 \) and \( z = r^4 - 1 \).
+Find the intersection (shadow boundary): \( 4 - 4r^2 = r^4 - 1 \implies r^4 + 4r^2 - 5 = 0 \implies (r^2 + 5)(r^2 - 1) = 0 \). Thus \( r^2 = 1 \implies r = 1 \).
+The region is \( 0 \le \theta \le 2\pi \), \( 0 \le r \le 1 \).
+\begin{align*}
+V &= \int_0^{2\pi} \int_0^1 \int_{r^4 - 1}^{4 - 4r^2} r \, dz \, dr \, d\theta \\
+&= \int_0^{2\pi} \int_0^1 r [ (4 - 4r^2) - (r^4 - 1) ] \, dr \, d\theta \\
+&= \int_0^{2\pi} d\theta \cdot \int_0^1 (5r - 4r^3 - r^5) \, dr \\
+&= 2\pi \left[ \frac{5}{2} r^2 - r^4 - \frac{1}{6} r^6 \right]_0^1 \\
+&= 2\pi \left( \frac{5}{2} - 1 - \frac{1}{6} \right) = 2\pi \left( \frac{15 - 6 - 1}{6} \right) = 2\pi \frac{8}{6} = \frac{8\pi}{3}.
+\end{align*}
+\end{example}
+
+\begin{example}[Moment of Inertia of a Cylinder]
+Let \( D \) be a cylinder of radius \( a \) and height \( h \) (from \( z=z_0 \) to \( z=z_0+h \)) with uniform density \( \delta \). Find the moment of inertia about the \( z \)-axis, \( I_z = \iiint_D \delta (x^2 + y^2) \, dV \).
+
+\textbf{Solution:}
+In cylindrical coordinates, \( x^2 + y^2 = r^2 \).
+\begin{align*}
+I_z &= \int_0^{2\pi} \int_0^a \int_{z_0}^{z_0+h} \delta (r^2) \, r \, dz \, dr \, d\theta \\
+&= \delta \int_0^{2\pi} d\theta \cdot \int_{z_0}^{z_0+h} dz \cdot \int_0^a r^3 \, dr \\
+&= \delta (2\pi) (h) \left[ \frac{r^4}{4} \right]_0^a = \frac{\pi \delta h a^4}{2}.
+\end{align*}
+Total mass \( m = \text{Density} \times \text{Volume} = \delta (\pi a^2 h) \).
+Substitute \( \delta = \frac{m}{\pi a^2 h} \):
+\[
+I_z = \frac{\pi h a^4}{2} \left( \frac{m}{\pi a^2 h} \right) = \frac{1}{2} m a^2.
+\]
+\end{example}
+
+\subsection{Triple Integrals in Spherical Coordinates}
+
+A point in \(\mathbb{R}^3\) can be represented by spherical coordinates \((\rho, \theta, \phi)\), where:
+\begin{itemize}
+    \item \(\rho \ge 0\) is the distance from the origin to the point.
+    \item \(0 \le \theta \le 2\pi\) is the angle in the \(xy\)-plane from the positive \(x\)-axis (same as in cylindrical coordinates).
+    \item \(0 \le \phi \le \pi\) is the angle from the positive \(z\)-axis down to the point.
+\end{itemize}
+
+The conversion formulas are:
+\[
+x = \rho \sin\phi \cos\theta, \quad y = \rho \sin\phi \sin\theta, \quad z = \rho \cos\phi.
+\]
+Also note that \(x^2 + y^2 + z^2 = \rho^2\).
+
+\begin{theorem}[Volume Element in Spherical Coordinates]
+The volume element \(dV\) in spherical coordinates is given by:
+\[
+dV = \rho^2 \sin\phi \, d\rho \, d\phi \, d\theta.
+\]
+\end{theorem}
+
+\begin{example}[Moment of Inertia of a Sphere]
+Consider a solid sphere \(S\) of radius \(r\) centered at the origin with uniform density \(\delta\). Find the moment of inertia about the \(z\)-axis, \(I_z = \iiint_S \delta(x^2 + y^2) \, dV\).
+
+\textbf{Solution:}
+The sphere is described by \(0 \le \rho \le r\), \(0 \le \theta \le 2\pi\), and \(0 \le \phi \le \pi\).
+First, convert the integrand:
+\[ x^2 + y^2 = (\rho \sin\phi \cos\theta)^2 + (\rho \sin\phi \sin\theta)^2 = \rho^2 \sin^2\phi (\cos^2\theta + \sin^2\theta) = \rho^2 \sin^2\phi. \]
+Now set up the integral:
+\begin{align*}
+I_z &= \int_0^{2\pi} \int_0^\pi \int_0^r \delta (\rho^2 \sin^2\phi) \, \rho^2 \sin\phi \, d\rho \, d\phi \, d\theta \\
+&= \delta \int_0^{2\pi} d\theta \cdot \int_0^\pi \sin^3\phi \, d\phi \cdot \int_0^r \rho^4 \, d\rho \\
+&= \delta (2\pi) \cdot \left[ \frac{\rho^5}{5} \right]_0^r \cdot \int_0^\pi (1 - \cos^2\phi)\sin\phi \, d\phi.
+\end{align*}
+For the \(\phi\) integral, let \(u = \cos\phi\), \(du = -\sin\phi \, d\phi\):
+\[ \int_1^{-1} -(1-u^2) \, du = \int_{-1}^1 (1-u^2) \, du = \left[ u - \frac{u^3}{3} \right]_{-1}^1 = \frac{4}{3}. \]
+Thus:
+\[ I_z = \delta (2\pi) \left( \frac{r^5}{5} \right) \left( \frac{4}{3} \right) = \frac{8\pi \delta r^5}{15}. \]
+Using mass \(m = \delta (\frac{4}{3}\pi r^3)\), we get \(I_z = \frac{2}{5} m r^2\).
+\end{example}
+
+\begin{example}[Volume of an "Ice-Cream Cone"]
+Find the volume of the solid \(D\) cut from the sphere \(\rho \le 1\) by the cone \(\phi = \pi/3\).
+
+\textbf{Solution:}
+The region \(D\) is bounded by the sphere \(\rho=1\) (upper limit) and the cone \(\phi=\pi/3\) (side).
+The limits are: \(0 \le \rho \le 1\), \(0 \le \phi \le \pi/3\), \(0 \le \theta \le 2\pi\).
+\begin{align*}
+V &= \iiint_D dV = \int_0^{2\pi} \int_0^{\pi/3} \int_0^1 \rho^2 \sin\phi \, d\rho \, d\phi \, d\theta \\
+&= \int_0^{2\pi} d\theta \cdot \int_0^{\pi/3} \sin\phi \, d\phi \cdot \int_0^1 \rho^2 \, d\rho \\
+&= (2\pi) \cdot [-\cos\phi]_0^{\pi/3} \cdot [\frac{\rho^3}{3}]_0^1 \\
+&= (2\pi) \cdot \left( -\frac{1}{2} - (-1) \right) \cdot \frac{1}{3} \\
+&= (2\pi) \cdot \frac{1}{2} \cdot \frac{1}{3} = \frac{\pi}{3}.
+\end{align*}
+\end{example}

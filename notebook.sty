@@ -1,0 +1,322 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{notebook}[2024/01/01 Professional Notebook Style]
+
+%----------------------------------------------------------------------------------------
+%	1. 基础包加载与页面设置
+%----------------------------------------------------------------------------------------
+\RequirePackage{etoolbox}
+\RequirePackage[dvipsnames,svgnames,table]{xcolor} % 更多颜色支持
+\RequirePackage{amsmath,amssymb,amsthm,amsfonts,bm}
+\RequirePackage{graphicx}
+\RequirePackage{geometry}
+\RequirePackage{hyperref}
+\RequirePackage{microtype}
+\RequirePackage{parskip} % 段落间距代替缩进
+\RequirePackage{emptypage} % 空白页不显示页码
+
+% 字体设置：使用 Palatino (NewPX) 替代 Times，数学公式更优美
+\RequirePackage{newpxtext}
+\RequirePackage{newpxmath}
+\RequirePackage[T1]{fontenc}
+% 标题使用无衬线字体
+\RequirePackage{helvet}
+
+% 页面布局
+\geometry{
+    paper=a4paper,
+    top=2.5cm, bottom=2.5cm,
+    left=2.5cm, right=2.5cm,
+    headheight=15pt
+}
+
+%----------------------------------------------------------------------------------------
+%	2. 颜色定义 (Modern Palette)
+%----------------------------------------------------------------------------------------
+% 主色调：普鲁士蓝 - 用于定理、一级标题
+\definecolor{primaryColor}{RGB}{0, 65, 110} 
+% 副色调：蓝绿色 - 用于定义、引用
+\definecolor{secondaryColor}{RGB}{0, 120, 110} 
+% 强调色：砖红色 - 用于示例、警告
+\definecolor{tertiaryColor}{RGB}{180, 60, 60} 
+% 背景色：极淡的蓝灰色 - 用于盒子背景
+\definecolor{boxBack}{RGB}{245, 247, 250}
+
+%----------------------------------------------------------------------------------------
+%	3. 链接与目录设置
+%----------------------------------------------------------------------------------------
+\hypersetup{
+    colorlinks=true,
+    linkcolor=primaryColor,
+    urlcolor=secondaryColor,
+    citecolor=tertiaryColor,
+    pdftitle={MATH 2023 Notes},
+    pdfauthor={Xincheng Zhu},
+    bookmarksnumbered=true
+}
+
+% 目录美化
+\RequirePackage{titletoc}
+\titlecontents{section}[0em]
+    {\addvspace{1pc}\bfseries\sffamily\color{primaryColor}}
+    {\contentslabel{1.5em}}
+    {}
+    {\titlerule*[0.5pc]{.}\contentspage}
+
+%----------------------------------------------------------------------------------------
+%	4. 页眉页脚与章节样式
+%----------------------------------------------------------------------------------------
+\RequirePackage{fancyhdr}
+\RequirePackage{titlesec}
+
+% 页眉页脚
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small\sffamily\color{gray} \textbf{MATH 2023} $\cdot$ Multivariable Calculus}
+\rhead{\small\sffamily\color{gray} \nouppercase{\leftmark}}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.5pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{primaryColor!50}\leaders\hrule height \headrulewidth\hfill}}
+
+% 章节标题样式
+% Section: 带下划线和大数字
+\titleformat{\section}
+  {\normalfont\Large\sffamily\bfseries\color{primaryColor}}{\thesection}{0.5em}{}[\titleline{\color{primaryColor!30}\titlerule[1pt]}]
+
+% Subsection: 简单的加粗变色
+\titleformat{\subsection}
+  {\normalfont\large\sffamily\bfseries\color{secondaryColor}}{\thesubsection}{1em}{}
+
+%----------------------------------------------------------------------------------------
+%	5. 增强型盒子定义 (TColorBox)
+%----------------------------------------------------------------------------------------
+\RequirePackage[most]{tcolorbox}
+\tcbuselibrary{skins, breakable, theorems}
+
+% 全局计数器
+\newcounter{globalcounter}[section]
+\renewcommand{\theglobalcounter}{\thesection.\arabic{globalcounter}}
+
+% 图标定义
+\newcommand{\iconThm}{$\blacktriangleright$}
+\newcommand{\iconDef}{$\diamondsuit$}
+\newcommand{\iconEx}{$\ast$}
+
+% ---------------- 定理 (Theorem) ----------------
+% 风格：这类盒子有明显的标题栏，圆角，轻微阴影
+\newenvironment{theorem}[1][]{%
+    \refstepcounter{globalcounter}%
+    \begin{tcolorbox}[
+        enhanced,
+        skin=enhancedlast,
+        breakable,
+        colframe=primaryColor,
+        colback=white,
+        coltitle=white,
+        fonttitle=\bfseries\sffamily,
+        title={\iconThm\  Theorem \theglobalcounter\ifstrempty{#1}{}{: #1}},
+        attach boxed title to top left={xshift=4mm, yshift=-2mm},
+        boxed title style={
+            colback=primaryColor,
+            arc=2pt,
+            boxrule=0pt,
+            % 已删除: shadow={2mm}{-2mm}{0mm}{black!30!white}  <-- 这里去除了标题阴影
+        },
+        boxrule=0.5pt,
+        arc=3pt,
+        drop fuzzy shadow=gray!40, % 保留了整体盒子的柔和阴影
+        before skip=12pt, after skip=12pt
+    ]%
+    \itshape % 定理内容通常用斜体
+}{%
+    \end{tcolorbox}%
+}
+
+% ---------------- 性质 (Property) ----------------
+% 风格：采用与定理类似的“标题盒子”风格，但使用副色调（蓝绿色）以示区分
+\newenvironment{property}[1][]{%
+    \refstepcounter{globalcounter}%
+    \begin{tcolorbox}[
+        enhanced,
+        skin=enhancedlast,
+        breakable,
+        colframe=secondaryColor, % 边框使用副色调
+        colback=white,
+        coltitle=white,
+        fonttitle=\bfseries\sffamily,
+        title={\iconThm\ Property \theglobalcounter\ifstrempty{#1}{}{: #1}},
+        attach boxed title to top left={xshift=4mm, yshift=-2mm},
+        boxed title style={
+            colback=secondaryColor, % 标题背景使用副色调
+            arc=2pt,
+            boxrule=0pt,
+            % 已删除: shadow={2mm}{-2mm}{0mm}{black!30!white} <-- 这里去除了标题阴影
+        },
+        boxrule=0.5pt,
+        arc=3pt,
+        drop fuzzy shadow=gray!40, % 保留了整体盒子的柔和阴影
+        before skip=12pt, after skip=12pt
+    ]%
+    \itshape % 内容使用斜体
+}{%
+    \end{tcolorbox}%
+}
+
+% ---------------- 推论 (Corollary) ----------------
+% 风格：同定理，但颜色稍浅或使用副色
+\newenvironment{corollary}[1][]{%
+    \refstepcounter{globalcounter}%
+    \begin{tcolorbox}[
+        enhanced, breakable,
+        colframe=primaryColor!80, colback=white,
+        coltitle=white,
+        fonttitle=\bfseries\sffamily,
+        title={Corollary \theglobalcounter\ifstrempty{#1}{}{: #1}},
+        attach boxed title to top left={xshift=4mm, yshift=-2mm},
+        boxed title style={colback=primaryColor!80, arc=2pt, boxrule=0pt}, % 推论本身没有设置标题阴影
+        boxrule=0.5pt, arc=3pt,
+        before skip=10pt, after skip=10pt
+    ]%
+    \itshape
+}{%
+    \end{tcolorbox}%
+}
+
+% ---------------- 定义 (Definition) ----------------
+% 风格：左侧粗线条，无边框，淡色背景
+\newenvironment{definition}[1][]{%
+    \refstepcounter{globalcounter}%
+    \begin{tcolorbox}[
+        enhanced, breakable,
+        frame hidden,
+        borderline west={3pt}{0pt}{secondaryColor},
+        colback=secondaryColor!7!white, % 极淡的背景
+        coltitle=secondaryColor,
+        fonttitle=\bfseries\sffamily,
+        title={\iconDef\ Definition \theglobalcounter\ifstrempty{#1}{}{: #1}},
+        attach boxed title to top left={xshift=0mm, yshift=0mm}, % 标题内嵌
+        boxed title style={frame hidden, colback=secondaryColor!7!white},
+        sharp corners,
+        left=4mm,
+        before skip=10pt, after skip=10pt
+    ]%
+}{%
+    \end{tcolorbox}%
+}
+
+% ---------------- 修复：添加 Remark (注记) ----------------
+% 风格：非常轻量，通常用于补充说明，灰色调
+\newenvironment{remark}[1][]{%
+    \refstepcounter{globalcounter}%
+    \begin{tcolorbox}[
+        enhanced, breakable,
+        frame hidden,
+        borderline west={2pt}{0pt}{gray}, % 灰色左边框
+        colback=white,
+        coltitle=gray,
+        fonttitle=\bfseries\sffamily,
+        title={Remark \theglobalcounter\ifstrempty{#1}{}{: #1}},
+        attach boxed title to top left,
+        boxed title style={frame hidden, colback=white},
+        left=4mm,
+        before skip=8pt, after skip=8pt
+    ]%
+    \small\color{black!80} % 字体稍小，颜色稍浅
+}{%
+    \end{tcolorbox}%
+}
+
+% ---------------- 示例 (Example) ----------------
+% 风格：极简，深色标题文字，侧边细线
+\newenvironment{example}[1][]{%
+    \refstepcounter{globalcounter}%
+    \begin{tcolorbox}[
+        enhanced, breakable,
+        frame hidden,
+        borderline west={1.5pt}{0pt}{tertiaryColor!70},
+        colback=white,
+        coltitle=tertiaryColor,
+        fonttitle=\bfseries\sffamily,
+        title={\iconEx\ Example \theglobalcounter\ifstrempty{#1}{}{: #1}},
+        attach boxed title to top left,
+        boxed title style={frame hidden, colback=white},
+        left=4mm,
+        before skip=8pt, after skip=8pt
+    ]%
+    \small % 示例字体稍小
+}{%
+    \par\hfill\textcolor{tertiaryColor!50}{\ensuremath{\blacksquare}} % 示例结束符号
+    \end{tcolorbox}%
+}
+
+% ---------------- 解答 (Solution) ----------------
+% 手动增加一个 Solution 环境，常用于讲义
+\newenvironment{solution}{%
+    \par\noindent\textbf{\sffamily\color{secondaryColor}Solution:}\ \ignorespaces
+}{%
+    \par\bigskip
+}
+
+%
+
+%----------------------------------------------------------------------------------------
+%	6. 封面定义 (Custom Title Page)
+%----------------------------------------------------------------------------------------
+\RequirePackage{pagecolor} % 用于控制背景色
+
+% 定义 \makecustomtitle 命令
+\newcommand{\makecustomtitle}{%
+    \begin{titlepage}
+        % 设置封面背景色（使用之前定义的淡灰色背景）
+        \pagecolor{boxBack}
+        
+        % 临时调整页面边距
+        \newgeometry{left=2cm,right=2cm,top=3cm,bottom=3cm}
+        
+        \centering
+        
+        % 顶部装饰线条或 Logo 区域
+        \vspace*{2cm}
+        {\color{primaryColor}\rule{0.6\textwidth}{2pt}}
+        \vspace{1cm}
+        
+        % 标题盒子
+        \begin{tcolorbox}[
+            enhanced,
+            colback=primaryColor,       % 普鲁士蓝背景
+            colframe=primaryColor,      % 边框同色
+            coltext=white,              % 白色文字
+            arc=5pt,                    % 圆角
+            boxrule=0pt,
+            halign=center,              % 文字居中
+            valign=center,
+            width=0.9\textwidth,        % 宽度
+            top=1.5cm, bottom=1.5cm,    % 内部上下边距
+            drop fuzzy shadow=gray!50   % 阴影效果
+        ]
+            {\Huge\sffamily\bfseries \@title \par} % 调用主文件定义的 \title
+        \end{tcolorbox}
+        
+        \vspace{1.5cm}
+        
+        % 作者信息
+        {\Large\sffamily\bfseries\color{secondaryColor} \@author \par}
+        
+        \vspace{0.5cm}
+        
+        % 日期信息
+        {\large\sffamily\color{gray} \@date \par}
+        
+        \vfill
+        
+        % 底部机构或描述信息
+        {\sffamily\color{tertiaryColor} 
+        \textbf{Multivariable Calculus Notes}\\
+        Department of Mathematics
+        }
+        \vspace*{2cm}
+        
+        % 恢复几何尺寸和背景色
+        \restoregeometry
+        \nopagecolor 
+    \end{titlepage}
+}
