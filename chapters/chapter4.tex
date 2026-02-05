@@ -1,333 +1,53 @@
-\section{Vector Calculus}
+\section{Probabilistic Formulation of Linear Regression}
 
-\subsection{Vector Fields}
+\begin{remark}[Note]
+This section is typically covered after Lecture 02 and assumes knowledge of probability theory and maximum likelihood estimation.
+\end{remark}
 
-A vector field is a function that assigns a vector to each point in its domain.
-\begin{itemize}
-    \item In \(\mathbb{R}^2\): \(\mathbf{F}(x, y) = P(x, y)\mathbf{i} + Q(x, y)\mathbf{j} = \langle P, Q \rangle\).
-    \item In \(\mathbb{R}^3\): \(\mathbf{F}(x, y, z) = P(x, y, z)\mathbf{i} + Q(x, y, z)\mathbf{j} + R(x, y, z)\mathbf{k} = \langle P, Q, R \rangle\).
-\end{itemize}
-(Here, \(P\), \(Q\), and \(R\) are often used instead of \(F_x, F_y, F_z\) to avoid confusion with partial derivatives).
+\subsection{Probabilistic Model}
 
-\begin{example}
-The gravitational force field is \(\mathbf{F}(\mathbf{r}) = -\frac{GMm}{|\mathbf{r}|^3}\mathbf{r}\), where \(\mathbf{r} = \langle x, y, z \rangle\).
-\end{example}
+Next, we show that least squares regression can be derived from a probabilistic model.
 
-\subsection{Line Integrals of Vector Fields}
+\begin{definition}[Linear Regression with Gaussian Noise]
+We assert:
+\[ y = w^\top x + \epsilon = \sum_{j=0}^D w_j x_j + \epsilon \]
 
-\begin{definition}[Line Integral]
-Let \(\mathbf{F}\) be a continuous vector field defined on a smooth curve \(C\) parametrized by \(\mathbf{r}(t)\), \(a \le t \le b\). The line integral of \(\mathbf{F}\) along \(C\) is:
-\[
-\int_C \mathbf{F} \cdot d\mathbf{r} = \int_a^b \mathbf{F}(\mathbf{r}(t)) \cdot \mathbf{r}'(t) \, dt.
-\]
+where the error term $\epsilon$ captures unmodeled effects and random noise.
+
+We also assume that $\epsilon$ follows the Gaussian distribution with zero mean and variance $\sigma^2$:
+\[ \epsilon \sim \mathcal{N}(0, \sigma^2) \]
+
+The model parameters $\theta$ include $w$ and $\sigma$. The conditional distribution of $y$ given input $x$ and parameters $\theta$ is a Gaussian:
+\[ p(y|x, \theta) = \mathcal{N}(y|\mu(x), \sigma^2) \]
+where $\mu(x) = w^\top x$.
 \end{definition}
 
-This integral represents the **work** done by the force field \(\mathbf{F}\) in moving a particle along the curve \(C\).
+\begin{remark}[Geometric Interpretation]
+For each input $x$, we get a distribution of $y$, which is a Gaussian distribution. To get a point estimation of $y$, we can use the mean:
+\[ \hat{y} = \mu(x) = w^\top x \]
+\end{remark}
 
-\begin{example}
-Let \(\mathbf{F}(x, y) = -y\mathbf{i} + x\mathbf{j}\) and \(C\) be the counter-clockwise unit quarter circle from \((1, 0)\) to \((0, 1)\).
-Evaluate \(\int_C \mathbf{F} \cdot d\mathbf{r}\).
+\subsection{Parameter Estimation}
 
-\textbf{Solution:}
-Parametrize \(C\): \(\mathbf{r}(t) = \langle \cos t, \sin t \rangle\), \(0 \le t \le \pi/2\).
-Then \(\mathbf{r}'(t) = \langle -\sin t, \cos t \rangle\).
-On \(C\), \(\mathbf{F}(\mathbf{r}(t)) = \langle -\sin t, \cos t \rangle\).
-\[
-\mathbf{F} \cdot \mathbf{r}'(t) = (-\sin t)(-\sin t) + (\cos t)(\cos t) = \sin^2 t + \cos^2 t = 1.
-\]
-\[
-\int_C \mathbf{F} \cdot d\mathbf{r} = \int_0^{\pi/2} 1 \, dt = \frac{\pi}{2}.
-\]
-\end{example}
-
-\begin{example}[3D Line Integral]
-Evaluate \(\int_C \mathbf{F} \cdot d\mathbf{r}\) where \(\mathbf{F} = \langle y - x^2, z - y^2, x - z^2 \rangle\) and \(C\) is \(\mathbf{r}(t) = \langle t, t^2, t^3 \rangle\), \(0 \le t \le 1\).
-
-\textbf{Solution:}
-\(\mathbf{r}'(t) = \langle 1, 2t, 3t^2 \rangle\).
-Substitute \(x=t, y=t^2, z=t^3\) into \(\mathbf{F}\):
-\(\mathbf{F} = \langle t^2 - t^2, t^3 - (t^2)^2, t - (t^3)^2 \rangle = \langle 0, t^3 - t^4, t - t^6 \rangle\).
-Dot product:
-\(\mathbf{F} \cdot \mathbf{r}'(t) = 0(1) + (t^3 - t^4)(2t) + (t - t^6)(3t^2) = 2t^4 - 2t^5 + 3t^3 - 3t^8\).
-Integral:
-\[
-\int_0^1 (3t^3 + 2t^4 - 2t^5 - 3t^8) \, dt = \left[ \frac{3}{4}t^4 + \frac{2}{5}t^5 - \frac{2}{6}t^6 - \frac{3}{9}t^9 \right]_0^1 = \frac{3}{4} + \frac{2}{5} - \frac{1}{3} - \frac{1}{3} = \frac{29}{60}.
-\]
-\end{example}
-
-\begin{example}[Piecewise Path]
-Evaluate \(\int_C -y\mathbf{i} + x\mathbf{j} \cdot d\mathbf{r}\) where \(C\) is the path:
-1. \(L_1\): \((0, 3)\) to \((0, 1)\) along \(y\)-axis.
-2. \(\Gamma_1\): Clockwise unit circular arc to \((1, 0)\).
-3. \(L_2\): \((1, 0)\) to \((3, 0)\) along \(x\)-axis.
-4. \(\Gamma_2\): Counter-clockwise circular arc (radius 3) back to \((0, 3)\).
-
-\textbf{Solution:}
-\begin{enumerate}
-    \item \(L_1\): \(x=0, dx=0\). \(\int -y(0) + 0 dy = 0\).
-    \item \(\Gamma_1\): Reverse of counter-clockwise unit arc. \(\int_{\Gamma_1} = -\int_{-\Gamma_1}\).
-    On unit circle, \(\mathbf{F} \cdot d\mathbf{r} = x dy - y dx = (\cos t)(\cos t) - (-\sin t)(-\sin t) = 1 \, dt\).
-    Integral is \(-\int_0^{\pi/2} 1 \, dt = -\pi/2\).
-    \item \(L_2\): \(y=0, dy=0\). \(\int -0 dx + x(0) = 0\).
-    \item \(\Gamma_2\): Radius 3 circle. \(x=3\cos t, y=3\sin t\).
-    \(\mathbf{F} \cdot d\mathbf{r} = (-3\sin t)(-3\sin t) + (3\cos t)(3\cos t) = 9\).
-    Integral is \(\int_0^{\pi/2} 9 \, dt = 9\pi/2\).
-\end{enumerate}
-Total: \(0 - \frac{\pi}{2} + 0 + \frac{9\pi}{2} = 4\pi\).
-\end{example}
-
-\subsection{Alternative Notations}
-
-If \(\mathbf{F} = \langle P, Q, R \rangle\), then \(\mathbf{F} \cdot d\mathbf{r} = P \, dx + Q \, dy + R \, dz\).
-\[
-\int_C \mathbf{F} \cdot d\mathbf{r} = \int_C P \, dx + Q \, dy + R \, dz.
-\]
-Also, using arc length parameter \(s\):
-\[
-\int_C \mathbf{F} \cdot \mathbf{T} \, ds,
-\]
-where \(\mathbf{T} = \mathbf{r}'(s)\) is the unit tangent vector.
-
-\subsection{Properties}
-
-\begin{itemize}
-    \item \textbf{Direction:} \(\int_{-C} \mathbf{F} \cdot d\mathbf{r} = -\int_C \mathbf{F} \cdot d\mathbf{r}\).
-    \item \textbf{Independence of Parametrization:} The value of the line integral depends only on the path \(C\) and its orientation, not on the specific parametrization \(\mathbf{r}(t)\).
-\end{itemize}
-
-\subsection{Definition and Fundamental Theorem}
-
-\begin{definition}[Conservative Vector Field]
-A vector field \(\mathbf{F}\) is called \textbf{conservative} if there exists a scalar function \(f\) (called the potential function) such that \(\mathbf{F} = \nabla f\).
-\end{definition}
-
-\begin{theorem}[Fundamental Theorem for Line Integrals]
-Let \(C\) be a smooth curve given by \(\mathbf{r}(t)\), \(a \le t \le b\). Let \(f\) be a differentiable function with gradient \(\nabla f\) continuous on \(C\). Then
-\[
-\int_C \nabla f \cdot d\mathbf{r} = f(\mathbf{r}(b)) - f(\mathbf{r}(a)).
-\]
-\end{theorem}
-
-\textbf{Consequence:} Line integrals of conservative vector fields are \textbf{path-independent}. If \(\mathbf{F}\) is conservative, \(\int_C \mathbf{F} \cdot d\mathbf{r}\) depends only on the endpoints of \(C\). For any closed curve \(C\), \(\oint_C \mathbf{F} \cdot d\mathbf{r} = 0\).
-
-\begin{example}
-Let \(\mathbf{F}(x, y, z) = \langle 2x + y, x + z^3, 3yz^2 + 1 \rangle\).
-1. Show \(\mathbf{F}\) is conservative by finding a potential \(f\).
-2. Evaluate \(\int_C \mathbf{F} \cdot d\mathbf{r}\) where \(C\) is a path from \((0, 1, 0)\) to \((0, 1, 2)\).
-
-\textbf{Solution:}
-1. We want \(\nabla f = \mathbf{F}\):
-   \(f_x = 2x + y \implies f = x^2 + xy + g(y, z)\).
-   \(f_y = x + g_y = x + z^3 \implies g_y = z^3 \implies g = yz^3 + h(z)\).
-   So \(f = x^2 + xy + yz^3 + h(z)\).
-   \(f_z = 3yz^2 + h'(z) = 3yz^2 + 1 \implies h'(z) = 1 \implies h(z) = z + C\).
-   Potential: \(f(x, y, z) = x^2 + xy + yz^3 + z\).
-2. By the Fundamental Theorem:
-   \(\int_C \mathbf{F} \cdot d\mathbf{r} = f(0, 1, 2) - f(0, 1, 0)\).
-   \(f(0, 1, 2) = 0 + 0 + 1(2^3) + 2 = 10\).
-   \(f(0, 1, 0) = 0 + 0 + 0 + 0 = 0\).
-   Integral = \(10 - 0 = 10\).
-\end{example}
-
-\subsection{Curl and Conservative Fields}
-
-\begin{definition}[Curl]
-The curl of a vector field \(\mathbf{F} = \langle P, Q, R \rangle\) is:
-\[
-\text{curl } \mathbf{F} = \nabla \times \mathbf{F} = \left| \begin{matrix} \mathbf{i} & \mathbf{j} & \mathbf{k} \\ \frac{\partial}{\partial x} & \frac{\partial}{\partial y} & \frac{\partial}{\partial z} \\ P & Q & R \end{matrix} \right|.
-\]
-\end{definition}
-
-\begin{theorem}[Curl Test]
-Let \(\mathbf{F}\) be a vector field defined on a simply-connected region (no holes).
-\(\mathbf{F}\) is conservative if and only if \(\text{curl } \mathbf{F} = \mathbf{0}\).
-\end{theorem}
-
-\textbf{Note:} If the domain is \textit{not} simply-connected (e.g., \(\mathbf{F} = \langle \frac{-y}{x^2+y^2}, \frac{x}{x^2+y^2} \rangle\) on \(\mathbb{R}^2 \setminus \{(0,0)\}\)), \(\text{curl } \mathbf{F} = \mathbf{0}\) does \textit{not} imply \(\mathbf{F}\) is conservative.
-
-\section{Green's Theorem}
-
-Green's Theorem relates a line integral along a simple closed curve \(C\) to a double integral over the plane region \(D\) bounded by \(C\).
-
-\begin{theorem}[Green's Theorem]
-Let \(C\) be a positively oriented (counter-clockwise), piecewise-smooth, simple closed curve in the plane and let \(D\) be the region bounded by \(C\). If \(P\) and \(Q\) have continuous partial derivatives on an open region that contains \(D\), then
-\[
-\oint_C P \, dx + Q \, dy = \iint_D \left( \frac{\partial Q}{\partial x} - \frac{\partial P}{\partial y} \right) \, dA.
-\]
-In vector notation: \(\oint_C \mathbf{F} \cdot d\mathbf{r} = \iint_D (\text{curl } \mathbf{F}) \cdot \mathbf{k} \, dA\).
-\end{theorem}
-
-\begin{example}
-Evaluate \(\oint_C -y \, dx + x \, dy\) where \(C\) is the square with vertices \((0, 0), (1, 0), (1, 1), (0, 1)\).
-
-\textbf{Solution:}
-Here \(P = -y\), \(Q = x\).
-\(\frac{\partial Q}{\partial x} - \frac{\partial P}{\partial y} = 1 - (-1) = 2\).
-By Green's Theorem:
-\[
-\oint_C -y \, dx + x \, dy = \iint_D 2 \, dA = 2 \times \text{Area}(D) = 2 \times 1 = 2.
-\]
-\end{example}
-
-\begin{example}[Winding Number]
-Let \(\mathbf{F} = \langle \frac{-y}{x^2+y^2}, \frac{x}{x^2+y^2} \rangle\). The curl of \(\mathbf{F}\) is zero everywhere except at \((0,0)\).
-If \(C\) is any simple closed curve enclosing the origin, Green's Theorem cannot be applied directly to the interior because of the singularity.
-However, by "drilling a hole" (using a small circle \(C_\epsilon\) around the origin), we can show:
-\[
-\oint_C \mathbf{F} \cdot d\mathbf{r} = \oint_{C_\epsilon} \mathbf{F} \cdot d\mathbf{r} = 2\pi.
-\]
-This integral measures the total angle change (winding number) around the origin.
-\end{example}
-
-\subsection{Parametric Surfaces}
-
-A surface \(S\) in \(\mathbb{R}^3\) can be described by a vector function of two parameters, \(u\) and \(v\):
-\[
-\mathbf{r}(u, v) = \langle x(u, v), y(u, v), z(u, v) \rangle, \quad (u, v) \in D.
-\]
-The tangent vectors to the grid curves are \(\mathbf{r}_u = \frac{\partial \mathbf{r}}{\partial u}\) and \(\mathbf{r}_v = \frac{\partial \mathbf{r}}{\partial v}\).
-The normal vector to the surface is \(\mathbf{N} = \mathbf{r}_u \times \mathbf{r}_v\).
-The surface is \textbf{smooth} if \(\mathbf{N} \neq \mathbf{0}\).
-
-\begin{example}
-\begin{enumerate}
-    \item \textbf{Cylinder:} \(x^2 + y^2 = r_0^2\).
-    Parametrization: \(\mathbf{r}(\theta, z) = \langle r_0 \cos\theta, r_0 \sin\theta, z \rangle\), \(0 \le \theta \le 2\pi\).
-    \item \textbf{Sphere:} \(x^2 + y^2 + z^2 = a^2\).
-    Parametrization: \(\mathbf{r}(\phi, \theta) = \langle a \sin\phi \cos\theta, a \sin\phi \sin\theta, a \cos\phi \rangle\).
-    \item \textbf{Graph:} \(z = f(x, y)\).
-    Parametrization: \(\mathbf{r}(x, y) = \langle x, y, f(x, y) \rangle\).
-\end{enumerate}
-\end{example}
-
-\subsection{Surface Integrals of Scalar Functions}
-
-\begin{definition}[Surface Area Element]
-The area of a small patch of surface is approximated by \(|\mathbf{r}_u \times \mathbf{r}_v| \, du \, dv\).
-The surface area element is \(dS = |\mathbf{r}_u \times \mathbf{r}_v| \, du \, dv\).
-\end{definition}
-
-\begin{definition}[Surface Integral]
-The surface integral of a scalar function \(f(x, y, z)\) over \(S\) is:
-\[
-\iint_S f(x, y, z) \, dS = \iint_D f(\mathbf{r}(u, v)) |\mathbf{r}_u \times \mathbf{r}_v| \, dA.
-\]
-\end{definition}
-
-\begin{example}
-Evaluate \(\iint_S (x^2 + y^2) \, dS\) where \(S\) is the sphere \(x^2 + y^2 + z^2 = a^2\).
-
-\textbf{Solution:}
-Use spherical coordinates parametrization \(\mathbf{r}(\phi, \theta)\) (from above).
-\(\mathbf{r}_\phi = \langle a \cos\phi \cos\theta, a \cos\phi \sin\theta, -a \sin\phi \rangle\).
-\(\mathbf{r}_\theta = \langle -a \sin\phi \sin\theta, a \sin\phi \cos\theta, 0 \rangle\).
-\(\mathbf{r}_\phi \times \mathbf{r}_\theta = \langle a^2 \sin^2\phi \cos\theta, a^2 \sin^2\phi \sin\theta, a^2 \sin\phi \cos\phi \rangle\).
-\(|\mathbf{r}_\phi \times \mathbf{r}_\theta| = a^2 \sin\phi\).
-Integrand: \(x^2 + y^2 = (a \sin\phi \cos\theta)^2 + (a \sin\phi \sin\theta)^2 = a^2 \sin^2\phi\).
+\begin{theorem}[Maximum Likelihood Estimation]
+Determine $\theta = (w, \sigma)$ by minimizing the cross entropy:
 \begin{align*}
-\iint_S (x^2 + y^2) \, dS &= \int_0^{2\pi} \int_0^\pi (a^2 \sin^2\phi) (a^2 \sin\phi) \, d\phi \, d\theta \\
-&= a^4 \int_0^{2\pi} d\theta \int_0^\pi \sin^3\phi \, d\phi \\
-&= a^4 (2\pi) (\frac{4}{3}) = \frac{8\pi a^4}{3}.
+&-\frac{1}{N} \sum_{i=1}^N \log p(y_i | x_i, \theta) \\
+&= -\frac{1}{N} \sum_{i=1}^N \log\left[ \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left(-\frac{(y_i - w^\top x_i)^2}{2\sigma^2}\right) \right] \\
+&= \frac{1}{2}\log(2\pi\sigma^2) + \frac{1}{2N\sigma^2} \sum_{i=1}^N (y_i - w^\top x_i)^2
 \end{align*}
-\end{example}
 
-\subsection{Surface Integrals of Vector Fields (Flux)}
-
-\begin{definition}[Surface Flux]
-Let \(\mathbf{F}\) be a continuous vector field defined on an oriented surface \(S\) with unit normal vector \(\mathbf{n}\). The flux of \(\mathbf{F}\) across \(S\) is:
-\[
-\iint_S \mathbf{F} \cdot d\mathbf{S} = \iint_S \mathbf{F} \cdot \mathbf{n} \, dS.
-\]
-\end{definition}
-
-Using parametrization \(\mathbf{r}(u, v)\), the normal vector \(\mathbf{n} = \frac{\mathbf{r}_u \times \mathbf{r}_v}{|\mathbf{r}_u \times \mathbf{r}_v|}\).
-Thus \(\mathbf{n} \, dS = (\mathbf{r}_u \times \mathbf{r}_v) \, du \, dv\).
-\[
-\iint_S \mathbf{F} \cdot d\mathbf{S} = \iint_D \mathbf{F}(\mathbf{r}(u, v)) \cdot (\mathbf{r}_u \times \mathbf{r}_v) \, dA.
-\]
-(The sign depends on the orientation).
-
-\begin{example}
-Find the flux of \(\mathbf{F} = \langle x, y, z \rangle\) across the sphere \(x^2 + y^2 + z^2 = a^2\) (outward orientation).
-
-\textbf{Solution:}
-Parametrization as before. \(\mathbf{r}_\phi \times \mathbf{r}_\theta = a \sin\phi \, \mathbf{r}\) (points outward).
-On the sphere, \(\mathbf{F} = \mathbf{r}\).
-\(\mathbf{F} \cdot (\mathbf{r}_\phi \times \mathbf{r}_\theta) = \mathbf{r} \cdot (a \sin\phi \, \mathbf{r}) = a \sin\phi (\mathbf{r} \cdot \mathbf{r}) = a \sin\phi (a^2) = a^3 \sin\phi\).
-\[
-\text{Flux} = \int_0^{2\pi} \int_0^\pi a^3 \sin\phi \, d\phi \, d\theta = a^3 (2\pi) (2) = 4\pi a^3.
-\]
-\end{example}
-
-\subsection{Stokes' Theorem}
-
-Stokes' Theorem relates the line integral of a vector field over a simple closed curve \(C\) to the surface integral of its curl over a surface \(S\) bounded by \(C\). It is the 3D generalization of Green's Theorem.
-
-\begin{theorem}[Stokes' Theorem]
-Let \(S\) be an oriented piecewise-smooth surface that is bounded by a simple, closed, piecewise-smooth boundary curve \(C\) with positive orientation (consistent with the right-hand rule relative to the normal \(\mathbf{n}\) of \(S\)). Let \(\mathbf{F}\) be a vector field with continuous partial derivatives on an open region containing \(S\). Then:
-\[
-\oint_C \mathbf{F} \cdot d\mathbf{r} = \iint_S (\text{curl } \mathbf{F}) \cdot d\mathbf{S} = \iint_S (\nabla \times \mathbf{F}) \cdot \mathbf{n} \, dS.
-\]
+Assume $\sigma$ is fixed. This is the same as minimizing the MSE:
+\[ L(w) = \frac{1}{N} \sum_{i=1}^N (y_i - w^\top x_i)^2 \]
 \end{theorem}
 
-\begin{example}
-Verify Stokes' Theorem for \(\mathbf{F} = \langle z - y, x, -x \rangle\) where \(S\) is the hemisphere \(x^2 + y^2 + z^2 = 4\), \(z \ge 0\), oriented upward. The boundary \(C\) is the circle \(x^2 + y^2 = 4\) in the \(xy\)-plane, oriented counter-clockwise.
+\begin{remark}[Summary]
+Under some assumptions, least-squares regression can be justified as a very natural method that minimizes cross entropy, or equivalently, maximizes likelihood.
 
-\textbf{Solution:}
-1. \textbf{Line Integral:} Parametrize \(C\): \(\mathbf{r}(t) = \langle 2\cos t, 2\sin t, 0 \rangle\), \(0 \le t \le 2\pi\).
-   \(\mathbf{F}(\mathbf{r}(t)) = \langle 0 - 2\sin t, 2\cos t, -2\cos t \rangle\).
-   \(\mathbf{r}'(t) = \langle -2\sin t, 2\cos t, 0 \rangle\).
-   \(\mathbf{F} \cdot \mathbf{r}' = (-2\sin t)(-2\sin t) + (2\cos t)(2\cos t) + 0 = 4\sin^2 t + 4\cos^2 t = 4\).
-   \(\oint_C \mathbf{F} \cdot d\mathbf{r} = \int_0^{2\pi} 4 \, dt = 8\pi\).
-
-2. \textbf{Surface Integral:} Curl \(\mathbf{F} = \langle 0 - 0, -1 - (-1), 1 - (-1) \rangle = \langle 0, 0, 2 \rangle\).
-   Using spherical coordinates for \(S\), \(\mathbf{n}\) is outward (upward).
-   Actually, \(\iint_S \text{curl } \mathbf{F} \cdot d\mathbf{S} = \iint_S \langle 0, 0, 2 \rangle \cdot \mathbf{n} \, dS\).
-   Alternatively, we can use a simpler surface \(S_2\): the disk \(x^2 + y^2 \le 4\) in the \(z=0\) plane.
-   Normal \(\mathbf{n} = \mathbf{k}\). \(dS = dA\).
-   \(\iint_{S_2} \langle 0, 0, 2 \rangle \cdot \langle 0, 0, 1 \rangle \, dA = \iint_{S_2} 2 \, dA = 2 \times \text{Area}(Disk) = 2 \times (\pi \cdot 2^2) = 8\pi\).
-   (Stokes' Theorem says the integral is independent of the surface, as long as the boundary is the same).
-\end{example}
-
-\subsection{Divergence Theorem}
-
-The Divergence Theorem relates the flux of a vector field across a closed surface \(S\) to the triple integral of its divergence over the solid \(E\) enclosed by \(S\).
-
-\begin{definition}[Divergence]
-The divergence of \(\mathbf{F} = \langle P, Q, R \rangle\) is the scalar field:
-\[
-\text{div } \mathbf{F} = \nabla \cdot \mathbf{F} = \frac{\partial P}{\partial x} + \frac{\partial Q}{\partial y} + \frac{\partial R}{\partial z}.
-\]
-\end{definition}
-
-\begin{theorem}[Divergence Theorem]
-Let \(E\) be a simple solid region and let \(S\) be the boundary surface of \(E\), given with positive (outward) orientation. Let \(\mathbf{F}\) be a vector field whose component functions have continuous partial derivatives on an open region that contains \(E\). Then:
-\[
-\iint_S \mathbf{F} \cdot d\mathbf{S} = \iiint_E \text{div } \mathbf{F} \, dV.
-\]
-\end{theorem}
-
-\begin{example}
-Find the flux of \(\mathbf{F} = \langle 3x, 4y, -5z \rangle\) across the sphere \(S: x^2 + y^2 + z^2 = a^2\).
-
-\textbf{Solution:}
-Calculate divergence:
-\(\text{div } \mathbf{F} = \frac{\partial}{\partial x}(3x) + \frac{\partial}{\partial y}(4y) + \frac{\partial}{\partial z}(-5z) = 3 + 4 - 5 = 2\).
-By Divergence Theorem:
-\[
-\text{Flux} = \iint_S \mathbf{F} \cdot d\mathbf{S} = \iiint_E 2 \, dV = 2 \times \text{Vol}(E) = 2 \times \frac{4}{3}\pi a^3 = \frac{8}{3}\pi a^3.
-\]
-\end{example}
-
-\begin{example}[Gauss's Law for Gravity]
-The gravitational field \(\mathbf{F} = -\frac{GMm}{|\mathbf{r}|^3}\mathbf{r}\) has divergence 0 everywhere except the origin.
-If \(S\) is a closed surface enclosing the origin, we cannot apply Divergence Theorem directly to the interior \(E\) because of the singularity.
-Similar to the Winding Number, we "drill a hole" with a small sphere \(S_\epsilon\) around the origin.
-Applying Divergence Theorem to the region \(E'\) between \(S\) and \(S_\epsilon\):
-\[
-\iint_S \mathbf{F} \cdot \mathbf{n} \, dS + \iint_{S_\epsilon} \mathbf{F} \cdot (-\mathbf{n}) \, dS = \iiint_{E'} \text{div } \mathbf{F} \, dV = 0.
-\]
-Thus \(\iint_S \mathbf{F} \cdot d\mathbf{S} = \iint_{S_\epsilon} \mathbf{F} \cdot d\mathbf{S}\).
-Flux through a sphere of radius \(a\) is \(-4\pi GMm\).
-So the flux through any closed surface enclosing the origin is \(-4\pi GMm\).
-\end{example}
+This probabilistic perspective provides:
+\begin{itemize}
+    \item A principled way to derive the objective function
+    \item A framework for uncertainty quantification
+    \item A basis for Bayesian approaches to regression
+\end{itemize}
+\end{remark}
