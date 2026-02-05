@@ -1,190 +1,118 @@
-\section{Three-Dimensional Space}
+\section{Linear Regression}
 
-\subsection{Rectangular Coordinates in $\mathbb{R}^3$}
+\subsection{Problem Statement}
 
-We use an ordered triple $(x, y, z)$ to represent a point in the three-dimensional space $\mathbb{R}^3$.
+\begin{definition}[Linear Regression Problem]
+Given a training set $D = \{x_i, y_i\}_{i=1}^N$ where:
 \begin{itemize}
-    \item \textbf{Origin:} The point $(0,0,0)$ where the three axes meet.
-    \item \textbf{Vector:} An arrow based at one point pointing to another. If $\mathbf{v}$ connects $P_0(x_0, y_0, z_0)$ to $P_1(x_1, y_1, z_1)$, then:
-    \[ \mathbf{v} = \langle x_1 - x_0, y_1 - y_0, z_1 - z_0 \rangle = (x_1 - x_0)\mathbf{i} + (y_1 - y_0)\mathbf{j} + (z_1 - z_0)\mathbf{k}. \]
+    \item Each $x_i$ is a $D$-dimensional real-valued column vector: $x = (x_1, \ldots, x_D)^\top$
+    \item Each $y_i$ is a real number
 \end{itemize}
 
-\begin{definition}[Vector Operations]
-Let $\mathbf{a} = \langle a_1, a_2, a_3 \rangle$, $\mathbf{b} = \langle b_1, b_2, b_3 \rangle$ and $c \in \mathbb{R}$.
+Our goal is to learn a function:
+\[ y = f(x, w) = w^\top x = \sum_{j=0}^D w_j x_j \]
+
+The weights $w = (w_0, w_1, \ldots, w_D)^\top$ determine how important the features $(x_1, \ldots, x_D)$ are in predicting the response $y$.
+
+Always set $x_0 = 1$, and $w_0$ is the bias term, often denoted by $b$.
+\end{definition}
+
+\begin{example}[Applications of Linear Regression]
+Here are several examples from real-world datasets:
 \begin{itemize}
-    \item \textbf{Addition:} $\mathbf{a} + \mathbf{b} = \langle a_1 + b_1, a_2 + b_2, a_3 + b_3 \rangle$
-    \item \textbf{Scalar Multiplication:} $c\mathbf{a} = \langle ca_1, ca_2, ca_3 \rangle$
+    \item Predict brain weight of mammals based on their body weight
+    \item Predict blood fat content based on age and weight
+    \item Predict death rate from cirrhosis based on a number of other factors
+    \item Predict selling price of houses based on a number of factors
 \end{itemize}
-\end{definition}
-
-\begin{property}[Algebraic Properties]
-\begin{enumerate}
-    \item $\mathbf{a} + \mathbf{b} = \mathbf{b} + \mathbf{a}$ (Commutativity)
-    \item $(\mathbf{a} + \mathbf{b}) + \mathbf{c} = \mathbf{a} + (\mathbf{b} + \mathbf{c})$ (Associativity)
-    \item $\lambda(\mathbf{a} + \mathbf{b}) = \lambda\mathbf{a} + \lambda\mathbf{b}$ (Distributivity)
-\end{enumerate}
-\end{property}
-
-\subsection{Dot Product}
-
-\begin{definition}[Dot Product]
-The dot product of $\mathbf{a} = \langle a_1, a_2, a_3 \rangle$ and $\mathbf{b} = \langle b_1, b_2, b_3 \rangle$ is the scalar:
-\[ \mathbf{a} \cdot \mathbf{b} = a_1 b_1 + a_2 b_2 + a_3 b_3. \]
-Note that $\mathbf{a} \cdot \mathbf{a} = |\mathbf{a}|^2$, where $|\mathbf{a}| = \sqrt{a_1^2 + a_2^2 + a_3^2}$ is the norm.
-\end{definition}
-
-\begin{theorem}[Geometric Interpretation]
-Let $\theta$ be the angle between $\mathbf{a}$ and $\mathbf{b}$. Then:
-\[ \mathbf{a} \cdot \mathbf{b} = |\mathbf{a}| |\mathbf{b}| \cos \theta. \]
-Consequently, $\theta = \cos^{-1}\left( \frac{\mathbf{a} \cdot \mathbf{b}}{|\mathbf{a}| |\mathbf{b}|} \right)$.
-\end{theorem}
-
-\begin{corollary}[Orthogonality]
-Two non-zero vectors $\mathbf{a}$ and $\mathbf{b}$ are orthogonal if and only if $\mathbf{a} \cdot \mathbf{b} = 0$.
-\end{corollary}
-
-\begin{example}[Example 1.1: Inscribed Triangle]
-Show that any triangle inscribed in a circle with one side coinciding with the diameter must be a right-angled triangle.
 \end{example}
 
-\begin{solution}
-Let $O$ be the center (origin). Let vectors $\mathbf{a}$ and $\mathbf{b}$ represent the radius to the vertices.
-The diameter connects endpoints defined by vectors $\mathbf{a}$ and $-\mathbf{a}$. Let $\mathbf{b}$ be the third vertex.
-The two sides of the triangle are represented by vectors:
-\[ \mathbf{u} = \mathbf{b} - \mathbf{a}, \quad \mathbf{v} = \mathbf{b} - (-\mathbf{a}) = \mathbf{b} + \mathbf{a}. \]
-Computing their dot product:
-\[ \mathbf{u} \cdot \mathbf{v} = (\mathbf{b} - \mathbf{a}) \cdot (\mathbf{b} + \mathbf{a}) = \mathbf{b} \cdot \mathbf{b} - \mathbf{a} \cdot \mathbf{a} = |\mathbf{b}|^2 - |\mathbf{a}|^2. \]
-Since both $\mathbf{a}$ and $\mathbf{b}$ are radii, $|\mathbf{a}| = |\mathbf{b}|$. Thus $\mathbf{u} \cdot \mathbf{v} = 0$, proving they are orthogonal.
-\end{solution}
+\subsection{Mean Squared Error}
 
-\subsection{Cross Product}
+How do we determine the weights $w$? We want the predicted response values $f(x_i)$ to be close to the observed response values. So we minimize the following objective function:
 
-\begin{definition}[Cross Product]
-The cross product $\mathbf{a} \times \mathbf{b}$ is a vector defined by:
-\begin{itemize}
-    \item \textbf{Magnitude:} $|\mathbf{a} \times \mathbf{b}| = |\mathbf{a}| |\mathbf{b}| \sin \theta$ (Area of the parallelogram spanned by $\mathbf{a}, \mathbf{b}$).
-    \item \textbf{Direction:} Orthogonal to both $\mathbf{a}$ and $\mathbf{b}$ (Right-hand rule).
-\end{itemize}
+\begin{definition}[Mean Squared Error]
+\[ L(w) = \frac{1}{N} \sum_{i=1}^N (y_i - w^\top x_i)^2 \]
+This is called the \textbf{mean squared error (MSE)}.
 \end{definition}
 
-\begin{theorem}[Determinant Formula]
+\begin{remark}
+As a function of the weights $w$, MSE is a quadratic ``bowl'' with a unique minimum. We can minimize it by setting its gradient to zero: $\nabla L(w) = 0$.
+\end{remark}
+
+\subsection{Matrix Representation}
+
+We can represent the training set $D = \{x_i, y_i\}_{i=1}^N$ using the design matrix $X$ and a column vector $y$:
+
 \[
-\mathbf{a} \times \mathbf{b} =
-\begin{vmatrix}
-\mathbf{i} & \mathbf{j} & \mathbf{k} \\
-a_1 & a_2 & a_3 \\
-b_1 & b_2 & b_3
-\end{vmatrix}
-= (a_2 b_3 - a_3 b_2) \mathbf{i} - (a_1 b_3 - a_3 b_1) \mathbf{j} + (a_1 b_2 - a_2 b_1) \mathbf{k}.
+X = \begin{bmatrix}
+x_{1,0} & x_{1,1} & x_{1,2} & \cdots & x_{1,D} \\
+x_{2,0} & x_{2,1} & x_{2,2} & \cdots & x_{2,D} \\
+\vdots & \vdots & \vdots & \ddots & \vdots \\
+x_{N,0} & x_{N,2} & x_{N,2} & \cdots & x_{N,D}
+\end{bmatrix} = \begin{bmatrix}
+x_1^\top \\
+x_2^\top \\
+\vdots \\
+x_N^\top
+\end{bmatrix}, \quad
+y = \begin{bmatrix}
+y_1 \\
+y_2 \\
+\vdots \\
+y_N
+\end{bmatrix}
 \]
+
+Then the MSE can be written as:
+\[ L(w) = \frac{1}{N} \|y - Xw\|_2^2 = \frac{1}{N} (y - Xw)^\top(y - Xw) = \frac{1}{N} (w^\top(X^\top X)w - 2w^\top(X^\top y) + y^\top y) \]
+
+\subsection{The Normal Equation}
+
+\begin{theorem}[Ordinary Least Squares Solution]
+From the matrix representation, we get that:
+\[ \nabla L(w) = \frac{1}{N}(2X^\top Xw - 2X^\top y) \]
+
+Setting the gradient to zero, we get the \textbf{normal equation}:
+\[ X^\top Xw = X^\top y \]
+
+The value of $w$ that minimizes $L(w)$ is:
+\[ \hat{w} = (X^\top X)^{-1}X^\top y \]
+
+This is called the \textbf{ordinary least squares (OLS)} solution.
 \end{theorem}
 
-\begin{example}[Example 1.2]
-Find a vector $\mathbf{n}$ orthogonal to the plane passing through $A(0, 2, -1)$, $B(4, 0, -1)$, and $C(7, -3, 0)$. Also find the area of $\triangle ABC$.
-\end{example}
+\section{Polynomial Regression}
 
-\begin{solution}
-Vectors on the plane:
-$\overrightarrow{AB} = \langle 4, -2, 0 \rangle$ and $\overrightarrow{AC} = \langle 7, -5, 1 \rangle$.
-The normal vector is their cross product:
-\[ \mathbf{n} = \overrightarrow{AB} \times \overrightarrow{AC} = \langle -2, -4, -6 \rangle. \]
-The area of $\triangle ABC$ is half the magnitude of the cross product:
-\[ \text{Area} = \frac{1}{2} |\overrightarrow{AB} \times \overrightarrow{AC}| = \frac{1}{2} \sqrt{(-2)^2 + (-4)^2 + (-6)^2} = \sqrt{14}. \]
-\end{solution}
+\subsection{Beyond Linear Regression}
 
-\subsection{Lines and Planes}
+Here again is the linear regression model:
+\[ y = f(x) = w^\top x = \sum_{j=0}^D w_j x_j \]
 
-\subsubsection{Parametric Equations of Lines}
-A line $L$ through $P_0(x_0, y_0, z_0)$ parallel to $\mathbf{v} = \langle v_1, v_2, v_3 \rangle$ is described by:
-\[ \mathbf{r}(t) = \mathbf{r}_0 + t\mathbf{v} \implies 
-\begin{cases} 
-x = x_0 + tv_1 \\
-y = y_0 + tv_2 \\
-z = z_0 + tv_3 
-\end{cases}
-\]
+Linear regression can be made to model non-linear relationships by replacing $x$ with some non-linear function of the inputs, $\phi(x)$. That is, we use:
+\[ y = f(x) = w^\top \phi(x) \]
 
-\begin{example}[Example 1.3]
-Find the parametric equation of the line passing through $A(3, -2, 0)$ and $B(1, 0, 1)$.
-\end{example}
+This is known as \textbf{basis function expansion} and $\phi$ is called \textbf{feature mapping}.
 
-\begin{solution}
-Direction vector $\mathbf{v} = \overrightarrow{AB} = \langle -2, 2, 1 \rangle$. Using $A$ as the base point:
-\[ \mathbf{r}(t) = \langle 3, -2, 0 \rangle + t\langle -2, 2, 1 \rangle \implies x = 3-2t, y = -2+2t, z = t. \]
-\end{solution}
+\subsection{Polynomial Feature Mapping}
 
-\subsubsection{Equations of Planes}
-A plane through $P_0(x_0, y_0, z_0)$ with normal $\mathbf{n} = \langle A, B, C \rangle$ satisfies $\mathbf{n} \cdot \overrightarrow{P_0 P} = 0$:
-\[ A(x - x_0) + B(y - y_0) + C(z - z_0) = 0 \quad \text{or} \quad Ax + By + Cz = D. \]
+\begin{definition}[Polynomial Regression]
+For $x = [1, x_1, x_2]^\top$, we can use the following polynomial feature mapping:
+\[ \phi(x) = [1, x_1, x_2, \ldots, x_D, x_1^2, x_1x_2, \ldots, x_D^d]^\top \]
 
-\begin{example}[Example 1.4]
-Find the equation of the plane passing through $A(0, 2, -1)$, $B(4, 0, -1)$, $C(7, -3, 0)$.
-\end{example}
+When $d = 2$, we get:
+\[ y = w^\top \phi(x) = w_0 + w_1x_1 + w_2x_2 + w_3x_1^2 + w_4x_1x_2 + w_5x_2^2 \]
+\end{definition}
 
-\begin{solution}
-From Example 1.2, $\mathbf{n} = \langle 1, 2, 3 \rangle$ (simplified from $\langle -2, -4, -6 \rangle$).
-Using point $A$:
-\[ 1(x - 0) + 2(y - 2) + 3(z - (-1)) = 0 \implies x + 2y + 3z = 1. \]
-\end{solution}
-
-\subsection{Parametric Curves}
-
-A parametric curve is defined by $\mathbf{r}(t) = f(t)\mathbf{i} + g(t)\mathbf{j} + h(t)\mathbf{k}$.
+\begin{remark}[Model Selection]
+What degree $d$ should we choose? What is the impact of $d$? This is a fundamental question in model selection.
 \begin{itemize}
-    \item \textbf{Velocity:} $\mathbf{v}(t) = \mathbf{r}'(t)$. Tangent to the curve.
-    \item \textbf{Speed:} $|\mathbf{v}(t)| = |\mathbf{r}'(t)|$.
-    \item \textbf{Acceleration:} $\mathbf{a}(t) = \mathbf{r}''(t)$.
+    \item Higher $d$ means higher model capacity
+    \item Higher model capacity implies better fit to training data
+    \item But does it generalize better to unseen data?
 \end{itemize}
+\end{remark}
 
-\begin{theorem}[Conservation of Angular Momentum]
-Let $\mathbf{L}(t) = \mathbf{r}(t) \times m\mathbf{r}'(t)$. If $\mathbf{L}(t) = \mathbf{C}$ (constant vector), then the motion lies in a plane.
-\end{theorem}
-
-\begin{proof}
-Since $\mathbf{L}$ is a cross product involving $\mathbf{r}$, $\mathbf{L} \cdot \mathbf{r} = 0$. If $\mathbf{L} = \langle A, B, C \rangle$ is constant, then $Ax(t) + By(t) + Cz(t) = 0$, which is the equation of a plane through the origin.
-\end{proof}
-
-\begin{property}[Differentiation Rules]
-\begin{enumerate}
-    \item $\frac{d}{dt} [f(t)\mathbf{u}(t)] = f'(t)\mathbf{u}(t) + f(t)\mathbf{u}'(t)$
-    \item $\frac{d}{dt} [\mathbf{u}(t) \cdot \mathbf{v}(t)] = \mathbf{u}'(t) \cdot \mathbf{v}(t) + \mathbf{u}(t) \cdot \mathbf{v}'(t)$
-    \item $\frac{d}{dt} [\mathbf{u}(t) \times \mathbf{v}(t)] = \mathbf{u}'(t) \times \mathbf{v}(t) + \mathbf{u}(t) \times \mathbf{v}'(t)$
-\end{enumerate}
-\end{property}
-
-\begin{example}[Example 1.6]
-Show that if a particle travels at a uniform speed $C$, its velocity and acceleration are orthogonal.
+\begin{example}[Polynomial Regression with Different Degrees]
+Consider polynomial regression with $d = 14$ and $d = 20$ and one feature $x$. Both models can fit the training data very well, but they may have very different behavior on test data.
 \end{example}
-
-\begin{solution}
-Given $|\mathbf{r}'(t)| = C$, then $|\mathbf{r}'(t)|^2 = \mathbf{r}'(t) \cdot \mathbf{r}'(t) = C^2$.
-Differentiating both sides:
-\[ \frac{d}{dt}(\mathbf{r}'(t) \cdot \mathbf{r}'(t)) = 0 \implies \mathbf{r}''(t) \cdot \mathbf{r}'(t) + \mathbf{r}'(t) \cdot \mathbf{r}''(t) = 0 \implies 2\mathbf{r}'(t) \cdot \mathbf{r}''(t) = 0. \]
-Thus $\mathbf{v} \cdot \mathbf{a} = 0$, so they are orthogonal.
-\end{solution}
-
-\subsection{Arc Length and Curvature}
-
-\begin{theorem}[Arc Length]
-The arc length of $\mathbf{r}(t)$ from $t=a$ to $t=b$ is:
-\[ L = \int_a^b |\mathbf{r}'(t)| \, dt. \]
-\end{theorem}
-
-\begin{example}[Example 1.7]
-Find the arc length of $\mathbf{r}(t) = \frac{1}{2}t^2 \mathbf{i} + \frac{2\sqrt{2}}{3}t^{3/2} \mathbf{j} + t \mathbf{k}$ from origin to $(2, 8/3, 2)$.
-\end{example}
-
-\begin{solution}
-Endpoints correspond to $t=0$ and $t=2$.
-$\mathbf{r}'(t) = \langle t, \sqrt{2}t^{1/2}, 1 \rangle$.
-\[ |\mathbf{r}'(t)|^2 = t^2 + 2t + 1 = (t+1)^2 \implies |\mathbf{r}'(t)| = t+1. \]
-\[ L = \int_0^2 (t+1) dt = \left[ \frac{t^2}{2} + t \right]_0^2 = 2 + 2 = 4. \quad (\text{Note: Text says 10, check calculation: } 2^2/2+2 = 4. \text{Wait, text says} \int (t+1) dt = [t^2/2 + t]_0^2 = 2+2=4. \text{Text Example 1.7 result says 10? } 4+2=6? \text{Let's re-read text. Text says } \int_0^2 (t+1)dt = [t^2/2+t]_0^2 = 10? \text{ No, } 2^2/2+2 = 4. \text{Wait, did text integrate different function? } \int (t^2+...) \text{ No. } t=2 \implies 2+2=4. \text{Wait, if result is 10, maybe bounds are different? Ah, usually these examples use } t^2/2 \text{ somewhere. Let's trust calculation } 4 \text{ unless text has typo or I misread image. Text image says } =10. \text{ Calculation in text image: } t^2/2 + t |_0^2. \text{ If } t=4, 16/2+4 = 12. \text{ If } t=2, 2+2=4. \text{ I will assume calculation } 4 \text{ is correct mathematically, but if you want to copy text exactly, copy text. Let's stick to math logic: } 4). \]
-\textit{*Note: Based on standard integration $\int_0^2 (t+1)dt = 4$. If the notes say 10, there might be a typo in the notes' limits or function.*}
-\end{solution}
-
-\subsubsection{Arc-Length Parametrization}
-A curve $\mathbf{r}(s)$ is arc-length parametrized if $|\mathbf{r}'(s)| = 1$.
-\textbf{Procedure to find $\mathbf{r}(s)$:}
-\begin{enumerate}
-    \item Compute arc length function $s(t) = \int_0^t |\mathbf{r}'(\tau)| d\
-
